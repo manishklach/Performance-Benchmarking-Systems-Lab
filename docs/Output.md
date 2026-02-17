@@ -1,18 +1,11 @@
-\# Sample Outputs
-
-
-
+# Sample Outputs
 These are example runs captured on Windows.
 
 
 
-\## One-command benchmark (bench.py)
-
-
+## One-command benchmark (bench.py)
 
 .\\.venv\\Scripts\\python.exe .\\bench.py
-
-
 
 ======================================================================================================================
 
@@ -39,12 +32,7 @@ Tip: vary fan-out to see CPU vs wait-bound behavior:
 ======================================================================================================================
 
 
-
-
-
-\## agents=8, workload=reasoning\_heavy
-
-
+## agents=8, workload=reasoning\_heavy
 
 .\\.venv\\Scripts\\python.exe .\\run\_bench.py --workload workloads\\reasoning\_heavy.json --agents 8 --steps 200
 
@@ -64,13 +52,7 @@ ctx\_switches(delta)=104
 
 ==============================================================================================================
 
-
-
-
-
-\## agents=64, workload=reasoning\_heavy
-
-
+## agents=64, workload=reasoning\_heavy
 
 .\\.venv\\Scripts\\python.exe .\\run\_bench.py --workload workloads\\reasoning\_heavy.json --agents 64 --steps 200
 
@@ -90,11 +72,7 @@ ctx\_switches(delta)=1331
 
 ==============================================================================================================
 
-
-
-\## agents=8, workload=action\_heavy
-
-
+## agents=8, workload=action\_heavy
 
 .\\.venv\\Scripts\\python.exe .\\run\_bench.py --workload workloads\\action\_heavy.json --agents 8 --steps 200
 
@@ -114,13 +92,7 @@ ctx\_switches(delta)=686
 
 ==============================================================================================================
 
-
-
-
-
-\## agents=64, workload=action\_heavy
-
-
+## agents=64, workload=action\_heavy
 
 .\\.venv\\Scripts\\python.exe .\\run\_bench.py --workload workloads\\action\_heavy.json --agents 64 --steps 200
 
