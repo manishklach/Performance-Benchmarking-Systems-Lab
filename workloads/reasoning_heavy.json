@@ -1,0 +1,32 @@
+{
+  "name": "reasoning_heavy",
+  "description": "More planning/parsing; fewer tool calls.",
+  "planning": {
+    "cpu_ms_mean": 3.0,
+    "cpu_ms_jitter": 1.2,
+    "json_kb_mean": 24,
+    "json_kb_jitter": 10
+  },
+  "memory": {
+    "ops_per_step": 80,
+    "hit_rate": 0.95
+  },
+  "tools": [
+    {
+      "name": "web_lookup",
+      "p": 0.05,
+      "wait_ms_mean": 25,
+      "wait_ms_jitter": 15,
+      "json_kb_mean": 8,
+      "json_kb_jitter": 4
+    },
+    {
+      "name": "db_read",
+      "p": 0.08,
+      "wait_ms_mean": 8,
+      "wait_ms_jitter": 5,
+      "json_kb_mean": 4,
+      "json_kb_jitter": 2
+    }
+  ]
+}

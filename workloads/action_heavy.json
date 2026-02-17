@@ -1,0 +1,40 @@
+{
+  "name": "action_heavy",
+  "description": "Frequent tool calls; orchestration dominated.",
+  "planning": {
+    "cpu_ms_mean": 1.0,
+    "cpu_ms_jitter": 0.6,
+    "json_kb_mean": 10,
+    "json_kb_jitter": 5
+  },
+  "memory": {
+    "ops_per_step": 30,
+    "hit_rate": 0.9
+  },
+  "tools": [
+    {
+      "name": "web_lookup",
+      "p": 0.35,
+      "wait_ms_mean": 35,
+      "wait_ms_jitter": 20,
+      "json_kb_mean": 10,
+      "json_kb_jitter": 5
+    },
+    {
+      "name": "db_read",
+      "p": 0.45,
+      "wait_ms_mean": 10,
+      "wait_ms_jitter": 7,
+      "json_kb_mean": 6,
+      "json_kb_jitter": 3
+    },
+    {
+      "name": "fs_read",
+      "p": 0.25,
+      "wait_ms_mean": 8,
+      "wait_ms_jitter": 5,
+      "json_kb_mean": 4,
+      "json_kb_jitter": 2
+    }
+  ]
+}

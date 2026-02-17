@@ -1,0 +1,40 @@
+{
+  "name": "mixed",
+  "description": "Balanced agent workload (planning + tools + memory).",
+  "planning": {
+    "cpu_ms_mean": 1.6,
+    "cpu_ms_jitter": 0.9,
+    "json_kb_mean": 12,
+    "json_kb_jitter": 6
+  },
+  "memory": {
+    "ops_per_step": 50,
+    "hit_rate": 0.92
+  },
+  "tools": [
+    {
+      "name": "web_lookup",
+      "p": 0.2,
+      "wait_ms_mean": 25,
+      "wait_ms_jitter": 15,
+      "json_kb_mean": 8,
+      "json_kb_jitter": 4
+    },
+    {
+      "name": "db_read",
+      "p": 0.25,
+      "wait_ms_mean": 8,
+      "wait_ms_jitter": 5,
+      "json_kb_mean": 4,
+      "json_kb_jitter": 2
+    },
+    {
+      "name": "fs_read",
+      "p": 0.1,
+      "wait_ms_mean": 6,
+      "wait_ms_jitter": 3,
+      "json_kb_mean": 2,
+      "json_kb_jitter": 1
+    }
+  ]
+}
