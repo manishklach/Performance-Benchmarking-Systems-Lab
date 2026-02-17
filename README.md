@@ -31,7 +31,7 @@ Run a single scenario:
 ---
 
 ## Sample outputs
-See [`docs/output.md`](docs/output.md) for real benchmark output tables and fan-out runs.
+See [`docs/Output.md`](docs/Output.md) for real benchmark output tables and fan-out runs.
 
 ## What you get
 
