@@ -13,6 +13,9 @@ A lightweight web speed test (Ookla-style) with added quality metrics.
 - Data usage tracking (MB)
 - Custom remote server URL for real WAN testing
 
+## Screenshot
+
+![Speedtest UI](./Speedtest-UI.png)
 ## Project Structure
 - `server.py` - Python HTTP API server + static hosting
 - `static/index.html` - Web UI and test logic
@@ -59,3 +62,4 @@ Then use a public URL such as:
 
 ## License
 MIT (see `LICENSE`)
+
