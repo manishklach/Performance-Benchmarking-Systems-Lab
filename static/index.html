@@ -74,6 +74,19 @@
       background: rgba(15,23,42,.75);
     }
     .quality strong { color: #fef08a; }
+    @media (max-width: 768px) {
+      body { padding: 10px; }
+      .app { padding: 14px; border-radius: 12px; }
+      h1 { font-size: 1.95rem; line-height: 1.15; }
+      .subtitle { font-size: .92rem; margin-bottom: 12px; }
+      .controls { gap: 8px; margin-bottom: 14px; }
+      .server-input { min-width: 0; width: 100%; font-size: 16px; }
+      button { width: 100%; padding: 12px 14px; }
+      .phase { width: 100%; font-size: .9rem; }
+      .grid { grid-template-columns: 1fr; gap: 10px; }
+      .value { font-size: 1.12rem; }
+      .card { padding: 12px; }
+    }
   </style>
 </head>
 <body>
@@ -93,6 +106,7 @@
       <div class="card"><div class="label">Latency (Avg)</div><div class="value" id="latency">0.0 ms</div><div class="tiny" id="latencyRange">min/max: -</div></div>
       <div class="card"><div class="label">Jitter</div><div class="value" id="jitter">0.0 ms</div><div class="tiny" id="packetLoss">Packet loss: -</div></div>
       <div class="card"><div class="label">Server Location</div><div class="value" id="serverLocation">-</div><div class="tiny" id="serverHost">Host: -</div></div>
+      <div class="card"><div class="label">Connection</div><div class="value" id="connectionType">Unknown</div><div class="tiny" id="connectionDetail">SSID/carrier name not exposed by browser</div></div>
       <div class="card"><div class="label">Loaded Latency</div><div class="value" id="loadedLatency">0.0 ms</div><div class="tiny" id="bufferBloat">Bufferbloat: -</div></div>
       <div class="card"><div class="label">MOS Estimate</div><div class="value" id="mos">0.00 / 5</div><div class="tiny">VoIP quality estimate</div></div>
       <div class="card"><div class="label">Data Used</div><div class="value" id="totalData">0.00 MB</div><div class="tiny" id="dataBudget">Target <= 40 MB (can exceed slightly)</div></div>
@@ -106,6 +120,8 @@
     const runBtn = $("runBtn");
     const phaseEl = $("phase");
     const serverBaseEl = $("serverBase");
+    const connectionTypeEl = $("connectionType");
+    const connectionDetailEl = $("connectionDetail");
     serverBaseEl.value = window.location.origin;
 
     const nonce = () => (crypto && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`);
@@ -150,6 +166,30 @@
       }
     }
 
+
+    function updateConnectionInfo() {
+      const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      if (!conn) {
+        connectionTypeEl.textContent = "Not available";
+        connectionDetailEl.textContent = "SSID/carrier name not exposed by browser";
+        return;
+      }
+
+      const rawType = (conn.type || "").toLowerCase();
+      const effective = conn.effectiveType || "unknown";
+      const downlink = Number.isFinite(conn.downlink) ? `${conn.downlink} Mbps` : "-";
+      const rtt = Number.isFinite(conn.rtt) ? `${conn.rtt} ms` : "-";
+      const saveData = conn.saveData ? "on" : "off";
+
+      let typeLabel = "Network";
+      if (rawType === "wifi") typeLabel = "Wi-Fi (type hint)";
+      else if (rawType === "cellular") typeLabel = "Cellular (type hint)";
+      else if (rawType) typeLabel = rawType;
+      else typeLabel = `effective ${effective}`;
+
+      connectionTypeEl.textContent = typeLabel;
+      connectionDetailEl.textContent = `effective: ${effective} | downlink: ${downlink} | rtt: ${rtt} | data saver: ${saveData} | SSID/carrier name not exposed`;
+    }
     function jitterFromPings(pings) {
       if (pings.length < 2) return 0;
       const deltas = [];
@@ -404,6 +444,11 @@
     }
 
     runBtn.addEventListener("click", runAllTests);
+    updateConnectionInfo();
+    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (conn && conn.addEventListener) conn.addEventListener("change", updateConnectionInfo);
   </script>
 </body>
 </html>
+
+
