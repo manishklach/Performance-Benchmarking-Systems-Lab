@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1440" height="1380" viewBox="0 0 1440 1380" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFF0F7" /><stop offset="100%" stop-color="#FFF7EF" /></linearGradient>
+    <linearGradient id="bluePink" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#5A6FF0" /><stop offset="100%" stop-color="#FF7CA2" /></linearGradient>
+    <linearGradient id="green" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#13C47D" /><stop offset="100%" stop-color="#55E6A6" /></linearGradient>
+    <linearGradient id="orange" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#FFBE4D" /><stop offset="100%" stop-color="#FF8F5B" /></linearGradient>
+    <linearGradient id="rose" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#FF5C74" /><stop offset="100%" stop-color="#FF7CA2" /></linearGradient>
+  </defs>
+  <rect width="1440" height="1380" fill="url(#bg)" />
+  <circle cx="1240" cy="100" r="170" fill="#FFD9C2" opacity="0.55" />
+  <circle cx="150" cy="1220" r="180" fill="#D9D1FF" opacity="0.55" />
+  <rect x="24" y="24" width="1392" height="1332" rx="30" fill="rgba(255,255,255,0.72)" stroke="rgba(94,58,126,0.12)" />
+  <text x="54" y="74" font-size="18" letter-spacing="2" fill="#C55A6E">CODEX FLEET MONITOR</text>
+  <text x="54" y="124" font-size="54" font-weight="700" fill="#2D2140">See the Codex fleet, not just a table.</text>
+  <text x="54" y="160" font-size="20" fill="#756D87">Confidence, heartbeat freshness, workload, and resource pressure in one screen.</text>
+  <rect x="54" y="200" width="850" height="240" rx="28" fill="rgba(255,255,255,0.86)" stroke="rgba(94,58,126,0.10)" />
+  <circle cx="180" cy="320" r="78" fill="none" stroke="rgba(90,111,240,0.12)" stroke-width="24" />
+  <circle cx="180" cy="320" r="78" fill="none" stroke="url(#bluePink)" stroke-width="24" stroke-dasharray="245.00000000000003 999" stroke-linecap="round" transform="rotate(-90 180 320)" />
+  <text x="180" y="330" text-anchor="middle" font-size="40" font-weight="700" fill="#2D2140">4</text>
+  <text x="290" y="290" font-size="28" font-weight="700" fill="#2D2140">Fleet pulse</text>
+  <text x="290" y="326" font-size="18" fill="#756D87">50% confirmed or observed</text>
+  <rect x="290" y="350" width="150" height="70" rx="20" fill="#F8F3FF" /><text x="314" y="378" font-size="16" fill="#756D87">Healthy HB</text><text x="314" y="407" font-size="28" font-weight="700" fill="#16B87A">0</text>
+  <rect x="458" y="350" width="150" height="70" rx="20" fill="#FFF1E3" /><text x="482" y="378" font-size="16" fill="#756D87">Peak CPU</text><text x="482" y="407" font-size="28" font-weight="700" fill="#FF9B3D">67%</text>
+  <rect x="626" y="350" width="150" height="70" rx="20" fill="#FFF0F4" /><text x="650" y="378" font-size="16" fill="#756D87">Stale HB</text><text x="650" y="407" font-size="28" font-weight="700" fill="#FF5C74">2</text>
+  <rect x="930" y="200" width="432" height="240" rx="28" fill="rgba(255,255,255,0.86)" stroke="rgba(94,58,126,0.10)" />
+  <text x="960" y="246" font-size="28" font-weight="700" fill="#2D2140">Discovery mix</text>
+  <rect x="960" y="286" width="370" height="28" rx="14" fill="#EEF0FF" />
+  <rect x="960" y="286" width="92.5" height="28" rx="14" fill="url(#green)" />
+  <rect x="1052.5" y="286" width="92.5" height="28" fill="url(#orange)" />
+  <rect x="1145" y="286" width="185" height="28" rx="14" fill="url(#rose)" />
+  <text x="960" y="352" font-size="18" fill="#2D2140">Confirmed: 1</text>
+  <text x="960" y="386" font-size="18" fill="#2D2140">Observed: 1</text>
+  <text x="960" y="420" font-size="18" fill="#2D2140">Suspected: 2</text>
+  <g transform="translate(54,470)"><rect width="310" height="120" rx="24" fill="#F8F3FF" /><text x="24" y="40" font-size="18" fill="#756D87">Confirmed agents</text><text x="24" y="82" font-size="42" font-weight="700" fill="#16B87A">1</text></g>
+  <g transform="translate(384,470)"><rect width="310" height="120" rx="24" fill="#FFF1E3" /><text x="24" y="40" font-size="18" fill="#756D87">24h spend</text><text x="24" y="82" font-size="42" font-weight="700" fill="#FF9B3D">$22.80</text></g>
+  <g transform="translate(714,470)"><rect width="310" height="120" rx="24" fill="#FFF0F4" /><text x="24" y="40" font-size="18" fill="#756D87">Delayed HB</text><text x="24" y="82" font-size="42" font-weight="700" fill="#FF5C74">2</text></g>
+  <g transform="translate(1044,470)"><rect width="318" height="120" rx="24" fill="#EEF0FF" /><text x="24" y="40" font-size="18" fill="#756D87">Network flow</text><text x="24" y="82" font-size="34" font-weight="700" fill="#5A6FF0">6260 kbps</text></g>
+  <rect x="54" y="622" width="640" height="220" rx="28" fill="rgba(255,255,255,0.86)" stroke="rgba(94,58,126,0.10)" />
+  <text x="84" y="666" font-size="30" font-weight="700" fill="#2D2140">Resource overview</text>
+  <text x="84" y="714" font-size="18" fill="#756D87">Average host CPU 56.1%</text>
+  <rect x="84" y="728" width="250" height="16" rx="8" fill="#EEF0FF" /><rect x="84" y="728" width="140.25" height="16" rx="8" fill="#5A6FF0" />
+  <text x="84" y="786" font-size="18" fill="#756D87">Average memory 66.5%</text>
+  <rect x="84" y="800" width="250" height="16" rx="8" fill="#E6FFF2" /><rect x="84" y="800" width="166.25" height="16" rx="8" fill="#16B87A" />
+  <text x="380" y="714" font-size="18" fill="#756D87">Peak disk 72.3%</text>
+  <rect x="380" y="728" width="250" height="16" rx="8" fill="#FFF2DE" /><rect x="380" y="728" width="180.75" height="16" rx="8" fill="#FF9B3D" />
+  <text x="380" y="786" font-size="18" fill="#756D87">Hot hosts 3</text>
+  <text x="380" y="825" font-size="34" font-weight="700" fill="#2D2140">6260 kbps</text>
+  <rect x="720" y="622" width="642" height="220" rx="28" fill="rgba(255,255,255,0.86)" stroke="rgba(94,58,126,0.10)" />
+  <text x="750" y="666" font-size="30" font-weight="700" fill="#2D2140">Heartbeat monitor</text>
+  <circle cx="840" cy="742" r="62" fill="none" stroke="#F0F1FF" stroke-width="22" />
+  <circle cx="840" cy="742" r="62" fill="none" stroke="#16B87A" stroke-width="22" stroke-dasharray="0 999" transform="rotate(-90 840 742)" />
+  <circle cx="840" cy="742" r="62" fill="none" stroke="#FF9B3D" stroke-width="22" stroke-dasharray="195 999" transform="rotate(-90 840 742)" />
+  <text x="840" y="750" text-anchor="middle" font-size="34" font-weight="700" fill="#2D2140">4</text>
+  <text x="960" y="716" font-size="18" fill="#2D2140">Healthy: 0</text>
+  <text x="960" y="752" font-size="18" fill="#2D2140">Delayed: 2</text>
+  <text x="960" y="788" font-size="18" fill="#2D2140">Stale: 2</text>
+  <rect x="54" y="874" width="860" height="440" rx="28" fill="rgba(255,255,255,0.86)" stroke="rgba(94,58,126,0.10)" />
+  <text x="84" y="918" font-size="30" font-weight="700" fill="#2D2140">Agent cards</text>
+  <g transform="translate(84,950)"><rect width="360" height="144" rx="24" fill="#FFFFFF" stroke="rgba(94,58,126,0.10)" /><rect width="8" height="144" rx="4" fill="#16B87A" /><text x="24" y="28" font-size="12" letter-spacing="1.5" fill="#C55A6E">CLI</text><text x="24" y="54" font-size="22" font-weight="700" fill="#2D2140">agent-cli-01</text><text x="24" y="78" font-size="14" fill="#756D87">Heartbeat delayed · 14m ago</text><circle cx="320" cy="74" r="8" fill="#FF9B3D" /><text x="24" y="100" font-size="14" fill="#756D87">CPU 18% · MEM 612 MB</text><rect x="24" y="112" width="240" height="10" rx="5" fill="#EEF0FF" /><rect x="24" y="112" width="235.2" height="10" rx="5" fill="url(#bluePink)" /><text x="278" y="121" font-size="14" fill="#2D2140">98%</text></g><g transform="translate(478,950)"><rect width="360" height="144" rx="24" fill="#FFFFFF" stroke="rgba(94,58,126,0.10)" /><rect width="8" height="144" rx="4" fill="#FF9B3D" /><text x="24" y="28" font-size="12" letter-spacing="1.5" fill="#C55A6E">APP</text><text x="24" y="54" font-size="22" font-weight="700" fill="#2D2140">agent-app-02</text><text x="24" y="78" font-size="14" fill="#756D87">Heartbeat stale · 17m ago</text><circle cx="320" cy="74" r="8" fill="#FF5C74" /><text x="24" y="100" font-size="14" fill="#756D87">CPU 6% · MEM 420 MB</text><rect x="24" y="112" width="240" height="10" rx="5" fill="#EEF0FF" /><rect x="24" y="112" width="196.79999999999998" height="10" rx="5" fill="url(#bluePink)" /><text x="278" y="121" font-size="14" fill="#2D2140">82%</text></g><g transform="translate(84,1122)"><rect width="360" height="144" rx="24" fill="#FFFFFF" stroke="rgba(94,58,126,0.10)" /><rect width="8" height="144" rx="4" fill="#FF5C74" /><text x="24" y="28" font-size="12" letter-spacing="1.5" fill="#C55A6E">SDK</text><text x="24" y="54" font-size="22" font-weight="700" fill="#2D2140">agent-sdk-03</text><text x="24" y="78" font-size="14" fill="#756D87">Heartbeat delayed · 15m ago</text><circle cx="320" cy="74" r="8" fill="#FF9B3D" /><text x="24" y="100" font-size="14" fill="#756D87">CPU 27% · MEM 734 MB</text><rect x="24" y="112" width="240" height="10" rx="5" fill="#EEF0FF" /><rect x="24" y="112" width="151.2" height="10" rx="5" fill="url(#bluePink)" /><text x="278" y="121" font-size="14" fill="#2D2140">63%</text></g><g transform="translate(478,1122)"><rect width="360" height="144" rx="24" fill="#FFFFFF" stroke="rgba(94,58,126,0.10)" /><rect width="8" height="144" rx="4" fill="#FF5C74" /><text x="24" y="28" font-size="12" letter-spacing="1.5" fill="#C55A6E">CLI</text><text x="24" y="54" font-size="22" font-weight="700" fill="#2D2140">agent-cli-04</text><text x="24" y="78" font-size="14" fill="#756D87">Heartbeat stale · 60m ago</text><circle cx="320" cy="74" r="8" fill="#FF5C74" /><text x="24" y="100" font-size="14" fill="#756D87">CPU 2% · MEM 188 MB</text><rect x="24" y="112" width="240" height="10" rx="5" fill="#EEF0FF" /><rect x="24" y="112" width="136.79999999999998" height="10" rx="5" fill="url(#bluePink)" /><text x="278" y="121" font-size="14" fill="#2D2140">57%</text></g>
+  <rect x="940" y="874" width="422" height="440" rx="28" fill="rgba(255,255,255,0.86)" stroke="rgba(94,58,126,0.10)" />
+  <text x="970" y="918" font-size="30" font-weight="700" fill="#2D2140">Hosts and jobs</text>
+  <text x="970" y="964" font-size="18" fill="#2D2140">k8s-node-a</text><text x="970" y="986" font-size="14" fill="#756D87">cloud · CPU 59% · 1/1 running</text><text x="970" y="1020" font-size="18" fill="#2D2140">design-laptop-01</text><text x="970" y="1042" font-size="14" fill="#756D87">endpoint · CPU 42% · 1/1 running</text><text x="970" y="1076" font-size="18" fill="#2D2140">build-server-01</text><text x="970" y="1098" font-size="14" fill="#756D87">server · CPU 67% · 0/2 running</text>
+  <circle cx="980" cy="1136" r="8" fill="#5A6FF0" /><text x="1000" y="1142" font-size="18" fill="#2D2140">Correlate endpoint and workspace signals</text><text x="1000" y="1160" font-size="14" fill="#756D87">k8s-node-a · running · 1500s</text><circle cx="980" cy="1180" r="8" fill="#5A6FF0" /><text x="1000" y="1186" font-size="18" fill="#2D2140">Build Codex fleet monitor MVP</text><text x="1000" y="1204" font-size="14" fill="#756D87">design-laptop-01 · completed · 1860s</text><circle cx="980" cy="1224" r="8" fill="#5A6FF0" /><text x="1000" y="1230" font-size="18" fill="#2D2140">Review stale heartbeats</text><text x="1000" y="1248" font-size="14" fill="#756D87">build-server-01 · completed · 900s</text>
+</svg>

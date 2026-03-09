@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Codex Agent Monitor</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero panel-surface">
+        <div class="hero-copy">
+          <p class="eyebrow">Codex Fleet Monitor</p>
+          <h1>See the Codex fleet, not just a table.</h1>
+          <p class="lede">
+            Live operational posture across confirmed, observed, and suspected Codex agents with confidence, coverage, workload, heartbeat freshness, and resource pressure in one screen.
+          </p>
+        </div>
+        <div class="hero-side">
+          <div class="stamp-card">
+            <span>Generated</span>
+            <strong id="generatedAt">-</strong>
+          </div>
+          <div class="stamp-card accent-orange">
+            <span>Source</span>
+            <strong>SQLite sample fleet</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="top-grid">
+        <section class="panel-surface spotlight">
+          <div class="section-title">
+            <h2>Fleet pulse</h2>
+            <p>Immediate operating picture</p>
+          </div>
+          <div class="spotlight-grid">
+            <div class="ring-card">
+              <div class="ring" id="fleetRing"><span id="ringTotal">0</span></div>
+              <div>
+                <h3>Discovery trust</h3>
+                <p id="ringCaption" class="muted">-</p>
+              </div>
+            </div>
+            <div class="signal-board" id="signalBoard"></div>
+          </div>
+        </section>
+
+        <section class="panel-surface stratification">
+          <div class="section-title">
+            <h2>Discovery mix</h2>
+            <p>How much of the fleet is proven versus heuristic</p>
+          </div>
+          <div class="stack-chart" id="stackChart"></div>
+          <div class="mix-legend" id="mixLegend"></div>
+        </section>
+      </section>
+
+      <section class="stats-grid" id="stats"></section>
+
+      <section class="resource-grid">
+        <section class="panel-surface resource-panel">
+          <div class="section-title">
+            <h2>Resource overview</h2>
+            <p>Average and peak infrastructure usage</p>
+          </div>
+          <div class="resource-summary" id="resourceSummary"></div>
+        </section>
+
+        <section class="panel-surface resource-panel">
+          <div class="section-title">
+            <h2>Heartbeat monitor</h2>
+            <p>Freshness across the fleet</p>
+          </div>
+          <div class="heartbeat-summary" id="heartbeatSummary"></div>
+        </section>
+      </section>
+
+      <section class="main-grid">
+        <section class="panel-surface agents-panel">
+          <div class="section-title">
+            <h2>Agent cards</h2>
+            <p>Confidence, status, heartbeat, workspace, process CPU, memory, and disk activity</p>
+          </div>
+          <div class="agent-grid" id="agentsGrid"></div>
+        </section>
+
+        <section class="rail">
+          <section class="panel-surface">
+            <div class="section-title">
+              <h2>Hosts</h2>
+              <p>Coverage and machine health by environment</p>
+            </div>
+            <div id="hostCards" class="host-grid"></div>
+          </section>
+
+          <section class="panel-surface">
+            <div class="section-title">
+              <h2>Suspected findings</h2>
+              <p>Signals that still need confirmation</p>
+            </div>
+            <div id="findingsList" class="findings-list"></div>
+          </section>
+        </section>
+      </section>
+
+      <section class="bottom-grid">
+        <section class="panel-surface timeline-panel">
+          <div class="section-title">
+            <h2>Recent jobs</h2>
+            <p>Timeline of active and completed Codex work</p>
+          </div>
+          <div id="jobsList" class="jobs-list"></div>
+        </section>
+      </section>
+    </main>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
