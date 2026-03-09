@@ -35,6 +35,8 @@ export function initSchema(db) {
     CREATE TABLE IF NOT EXISTS agent_instances (
       id TEXT PRIMARY KEY,
       host_id TEXT NOT NULL,
+      provider TEXT NOT NULL,
+      agent_family TEXT NOT NULL,
       codex_type TEXT NOT NULL,
       discovery_level TEXT NOT NULL,
       status TEXT NOT NULL,
@@ -151,12 +153,8 @@ function secondsBetween(earlier, later = new Date()) {
 }
 
 function heartbeatStateFromAge(ageSeconds) {
-  if (ageSeconds <= 120) {
-    return 'healthy';
-  }
-  if (ageSeconds <= 900) {
-    return 'delayed';
-  }
+  if (ageSeconds <= 120) return 'healthy';
+  if (ageSeconds <= 900) return 'delayed';
   return 'stale';
 }
 
@@ -172,6 +170,13 @@ export function getDashboardSnapshot(db) {
       SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) AS failed_agents
     FROM agent_instances
   `).get();
+
+  const providerSummary = db.prepare(`
+    SELECT provider, COUNT(*) AS count
+    FROM agent_instances
+    GROUP BY provider
+    ORDER BY count DESC, provider ASC
+  `).all();
 
   const activeCost = db.prepare(`
     SELECT ROUND(COALESCE(SUM(cost_usd), 0), 2) AS total_cost
@@ -200,11 +205,7 @@ export function getDashboardSnapshot(db) {
     FROM hosts h
     LEFT JOIN agent_instances a ON a.host_id = h.id
     LEFT JOIN host_metrics hm ON hm.id = (
-      SELECT hm2.id
-      FROM host_metrics hm2
-      WHERE hm2.host_id = h.id
-      ORDER BY hm2.recorded_at DESC
-      LIMIT 1
+      SELECT hm2.id FROM host_metrics hm2 WHERE hm2.host_id = h.id ORDER BY hm2.recorded_at DESC LIMIT 1
     )
     GROUP BY h.id
     ORDER BY h.environment, h.hostname
@@ -218,6 +219,8 @@ export function getDashboardSnapshot(db) {
   const agents = db.prepare(`
     SELECT
       a.id,
+      a.provider,
+      a.agent_family,
       a.codex_type,
       a.discovery_level,
       a.status,
@@ -235,7 +238,6 @@ export function getDashboardSnapshot(db) {
       am.disk_write_kbps,
       am.uptime_seconds,
       am.restart_count,
-      am.recorded_at AS metrics_recorded_at,
       hb.status AS heartbeat_status,
       hb.recorded_at AS heartbeat_recorded_at,
       hb.tokens_used,
@@ -243,34 +245,21 @@ export function getDashboardSnapshot(db) {
     FROM agent_instances a
     JOIN hosts h ON h.id = a.host_id
     LEFT JOIN agent_metrics am ON am.id = (
-      SELECT am2.id
-      FROM agent_metrics am2
-      WHERE am2.agent_id = a.id
-      ORDER BY am2.recorded_at DESC
-      LIMIT 1
+      SELECT am2.id FROM agent_metrics am2 WHERE am2.agent_id = a.id ORDER BY am2.recorded_at DESC LIMIT 1
     )
     LEFT JOIN heartbeats hb ON hb.id = (
-      SELECT hb2.id
-      FROM heartbeats hb2
-      WHERE hb2.agent_id = a.id
-      ORDER BY hb2.recorded_at DESC
-      LIMIT 1
+      SELECT hb2.id FROM heartbeats hb2 WHERE hb2.agent_id = a.id ORDER BY hb2.recorded_at DESC LIMIT 1
     )
     ORDER BY
-      CASE a.discovery_level
-        WHEN 'confirmed' THEN 1
-        WHEN 'observed' THEN 2
-        ELSE 3
-      END,
+      CASE a.discovery_level WHEN 'confirmed' THEN 1 WHEN 'observed' THEN 2 ELSE 3 END,
       a.status DESC,
       a.confidence_score DESC
   `).all().map((agent) => {
     const heartbeatAgeSeconds = agent.heartbeat_recorded_at ? secondsBetween(agent.heartbeat_recorded_at, now) : null;
-    const heartbeat_state = heartbeatAgeSeconds === null ? 'stale' : heartbeatStateFromAge(heartbeatAgeSeconds);
     return {
       ...agent,
       heartbeatAgeSeconds,
-      heartbeat_state
+      heartbeat_state: heartbeatAgeSeconds === null ? 'stale' : heartbeatStateFromAge(heartbeatAgeSeconds)
     };
   });
 
@@ -286,6 +275,7 @@ export function getDashboardSnapshot(db) {
       j.repo_path,
       j.model_name,
       a.user_name,
+      a.provider,
       h.hostname
     FROM jobs j
     JOIN agent_instances a ON a.id = j.agent_id
@@ -303,7 +293,8 @@ export function getDashboardSnapshot(db) {
       d.install_signature,
       d.confidence_score,
       d.observed_at,
-      d.notes
+      d.notes,
+      a.provider
     FROM discoveries d
     JOIN agent_instances a ON a.id = d.agent_id
     WHERE a.discovery_level = 'suspected'
@@ -346,6 +337,7 @@ export function getDashboardSnapshot(db) {
       ...fleetSummary,
       total_cost: activeCost.total_cost
     },
+    providerSummary,
     heartbeatSummary,
     resourceSummary,
     hosts: hostRows,

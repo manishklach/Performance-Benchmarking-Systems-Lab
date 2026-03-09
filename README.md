@@ -1,12 +1,15 @@
-# Codex Agent Monitor
+# Universal Agent Monitor
 
-A polished MVP for discovering, monitoring, and reviewing `Codex-only` agents across endpoints, servers, and cloud environments.
+A polished MVP for discovering, monitoring, and reviewing multi-provider agents across endpoints, servers, and cloud environments.
 
-It combines three layers in one lightweight project:
+It now models agents generically instead of being locked to one vendor.
 
-- `discovery confidence`: confirmed, observed, and suspected Codex agents
-- `operational telemetry`: CPU, memory, disk, network, process usage, and cost
-- `heartbeat monitoring`: healthy, delayed, and stale agents at fleet and per-agent level
+## Supported sample providers in this repo
+
+- `OpenAI / Codex`
+- `Anthropic / Claude`
+- `Google / Gemini`
+- `OpenClaw`
 
 ## Dashboard gallery
 
@@ -14,11 +17,11 @@ It combines three layers in one lightweight project:
 
 ![Dashboard overview](assets/screenshots/dashboard-overview.png)
 
-### Fleet pulse and discovery trust
+### Fleet pulse and provider mix
 
 ![Fleet pulse](assets/screenshots/fleet-pulse.png)
 
-### Resource and heartbeat monitoring
+### Resources and heartbeat monitoring
 
 ![Resources and heartbeat](assets/screenshots/resources-heartbeat.png)
 
@@ -26,28 +29,28 @@ It combines three layers in one lightweight project:
 
 ![Agent cards](assets/screenshots/agent-cards.png)
 
-### Host pressure and recent jobs
+### Hosts and recent jobs
 
 ![Hosts and jobs](assets/screenshots/hosts-jobs.png)
 
 ## What it does
 
-Codex Agent Monitor is designed around a realistic constraint: you usually cannot perfectly scan any machine and prove every process is a Codex agent. So the monitor models trust explicitly instead of pretending discovery is perfect.
+The monitor separates two concerns that are often mixed together:
 
-### Discovery model
+- `provider intelligence`: Codex, Claude, Gemini, OpenClaw, or custom
+- `runtime operations`: discovery, heartbeat, CPU, memory, disk, network, jobs, and cost
 
-- `confirmed`: strong local evidence such as known Codex CLI/app signatures or managed launcher evidence
-- `observed`: workspace-side evidence without local proof on the host
-- `suspected`: heuristic detection that still needs review
+That makes it possible to monitor heterogeneous agent fleets through one normalized dashboard and schema.
 
-### Monitoring coverage
+## Monitoring coverage
 
-- fleet summary and discovery mix
+- confirmed, observed, and suspected discovery states
+- provider-neutral fleet inventory
 - host CPU, memory, disk, and network telemetry
 - per-agent process CPU, memory, disk I/O, uptime, and restart count
 - heartbeat freshness with `healthy`, `delayed`, and `stale` states
-- hot-host ranking for machines under the highest current pressure
-- recent job timeline with model, duration, and outcome
+- hot-host ranking for machines under the highest pressure
+- recent job timeline with model, duration, provider, and outcome
 - raw sample DB export through JSON endpoints
 
 ## Architecture
@@ -77,7 +80,7 @@ assets/screenshots/   Dashboard screenshots for the repo
 public/               Dashboard frontend
 scripts/              Seed and preview generation scripts
 src/                  SQLite schema, aggregations, and HTTP server
-tests/                End-to-end API and seed tests
+tests/                API and seed verification
 data/                 Local runtime artifacts and generated previews
 ```
 
@@ -108,7 +111,7 @@ npm test
 The sample seed currently includes:
 
 - `3` hosts
-- `4` agent instances
+- `4` multi-provider agent instances
 - `4` discovery events
 - `4` heartbeat snapshots
 - `4` jobs
@@ -123,11 +126,12 @@ The sample seed currently includes:
 - average memory usage: `66.5%`
 - peak disk usage: `72.3%`
 - total network throughput: `6260 kbps`
-- heartbeat state mix: `0 healthy`, `2 delayed`, `2 stale`
+- heartbeat state mix: `0 healthy`, `0 delayed`, `4 stale`
+- provider mix: `openai`, `anthropic`, `google`, `openclaw`
 
 ## Suggested next steps
 
-- collector ingest API for real endpoint scanners
+- real collector ingest API for endpoint and server scanners
 - alert rules for stale agents and high resource pressure
 - sparkline history for heartbeat and resource trends
 - host and agent drill-down pages

@@ -11,93 +11,125 @@ initSchema(db);
 const data = getDashboardSnapshot(db);
 
 const total = data.fleetSummary.total_agents;
-const trustPercent = Math.round(((data.fleetSummary.confirmed_agents + data.fleetSummary.observed_agents) / total) * 100);
-const widths = {
-  confirmed: Math.round((data.fleetSummary.confirmed_agents / total) * 100),
-  observed: Math.round((data.fleetSummary.observed_agents / total) * 100),
-  suspected: Math.round((data.fleetSummary.suspected_agents / total) * 100)
-};
+const trusted = data.fleetSummary.confirmed_agents + data.fleetSummary.observed_agents;
+const trustPercent = Math.round((trusted / total) * 100);
 const hb = data.heartbeatSummary;
-const healthyPct = Math.round((hb.healthy / hb.total) * 100);
-const delayedPct = Math.round((hb.delayed / hb.total) * 100);
+const healthyPct = hb.total ? Math.round((hb.healthy / hb.total) * 100) : 0;
+const delayedPct = hb.total ? Math.round((hb.delayed / hb.total) * 100) : 0;
+const suspectedPct = Math.round((data.fleetSummary.suspected_agents / total) * 100);
+const observedPct = Math.round((data.fleetSummary.observed_agents / total) * 100);
+const confirmedPct = 100 - suspectedPct - observedPct;
+
+function agentBlock(agent, x, y) {
+  const confidence = Math.round(agent.confidence_score * 100);
+  const hbColor = agent.heartbeat_state === 'healthy' ? '#18bb7d' : agent.heartbeat_state === 'delayed' ? '#ff9c3f' : '#ff5f7b';
+  const stripe = agent.discovery_level === 'confirmed' ? '#18bb7d' : agent.discovery_level === 'observed' ? '#ff9c3f' : '#ff5f7b';
+  const memWidth = Math.min(100, Math.round((agent.process_memory_mb || 0) / 10));
+  return `
+    <g transform="translate(${x},${y})">
+      <rect width="460" height="220" rx="26" fill="rgba(255,255,255,0.96)" stroke="rgba(87,54,140,0.12)"/>
+      <rect width="9" height="220" rx="4" fill="${stripe}"/>
+      <text x="26" y="34" font-size="13" letter-spacing="2" fill="#c75f74">${agent.agent_family.toUpperCase()}</text>
+      <text x="26" y="66" font-size="28" font-weight="700" fill="#281d3f">${agent.id}</text>
+      <rect x="26" y="84" width="125" height="28" rx="14" fill="rgba(255,255,255,0.84)" stroke="${hbColor}"/>
+      <text x="46" y="103" font-size="13" fill="${hbColor}">${agent.provider}</text>
+      <circle cx="412" cy="98" r="9" fill="${hbColor}"/>
+      <text x="26" y="136" font-size="15" fill="#7b738d">${agent.current_task}</text>
+      <text x="26" y="160" font-size="14" fill="#7b738d">Heartbeat ${Math.round((agent.heartbeatAgeSeconds || 0) / 60)}m ago</text>
+      <text x="26" y="184" font-size="13" fill="#7b738d">CPU ${Math.round(agent.process_cpu_percent || 0)}%  MEM ${Math.round(agent.process_memory_mb || 0)} MB  IO ${Math.round(agent.disk_read_kbps || 0)}r/${Math.round(agent.disk_write_kbps || 0)}w</text>
+      <rect x="26" y="194" width="300" height="10" rx="5" fill="#ecebff"/>
+      <rect x="26" y="194" width="${confidence * 3}" height="10" rx="5" fill="url(#purple)"/>
+      <rect x="338" y="194" width="90" height="10" rx="5" fill="#e7fff3"/>
+      <rect x="338" y="194" width="${Math.min(90, memWidth * 0.9)}" height="10" rx="5" fill="#18bb7d"/>
+    </g>`;
+}
+
+const providerRows = data.providerSummary.map((item, index) => `
+  <text x="420" y="${498 + index * 28}" font-size="18" fill="#281d3f">${item.provider}: ${item.count}</text>
+`).join('');
+
+const hostRows = data.hosts.map((host, index) => `
+  <text x="1124" y="${1000 + index * 74}" font-size="20" fill="#281d3f">${host.hostname}</text>
+  <text x="1124" y="${1022 + index * 74}" font-size="14" fill="#7b738d">${host.environment} · CPU ${Math.round(host.cpu_percent)}% · MEM ${Math.round(host.memory_percent)}% · DISK ${Math.round(host.disk_percent)}%</text>
+`).join('');
+
+const jobRows = data.jobs.slice(0, 3).map((job, index) => `
+  <circle cx="1142" cy="${1344 + index * 70}" r="9" fill="#6d55ff"/>
+  <text x="1164" y="${1350 + index * 70}" font-size="19" fill="#281d3f">${job.title}</text>
+  <text x="1164" y="${1372 + index * 70}" font-size="14" fill="#7b738d">${job.provider} · ${job.hostname} · ${job.duration_seconds}s</text>
+`).join('');
 
 const svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg width="1440" height="1380" viewBox="0 0 1440 1380" xmlns="http://www.w3.org/2000/svg">
+<svg width="1600" height="1600" viewBox="0 0 1600 1600" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFF0F7" /><stop offset="100%" stop-color="#FFF7EF" /></linearGradient>
-    <linearGradient id="bluePink" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#5A6FF0" /><stop offset="100%" stop-color="#FF7CA2" /></linearGradient>
-    <linearGradient id="green" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#13C47D" /><stop offset="100%" stop-color="#55E6A6" /></linearGradient>
-    <linearGradient id="orange" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#FFBE4D" /><stop offset="100%" stop-color="#FF8F5B" /></linearGradient>
-    <linearGradient id="rose" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#FF5C74" /><stop offset="100%" stop-color="#FF7CA2" /></linearGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff3f7"/><stop offset="100%" stop-color="#fff8ef"/></linearGradient>
+    <linearGradient id="purple" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#6d55ff"/><stop offset="100%" stop-color="#ff7ca4"/></linearGradient>
+    <linearGradient id="orange" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ffb94b"/><stop offset="100%" stop-color="#ff8e63"/></linearGradient>
+    <linearGradient id="green" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#12c27d"/><stop offset="100%" stop-color="#69e7aa"/></linearGradient>
+    <linearGradient id="pink" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ff6079"/><stop offset="100%" stop-color="#ff7aa8"/></linearGradient>
   </defs>
-  <rect width="1440" height="1380" fill="url(#bg)" />
-  <circle cx="1240" cy="100" r="170" fill="#FFD9C2" opacity="0.55" />
-  <circle cx="150" cy="1220" r="180" fill="#D9D1FF" opacity="0.55" />
-  <rect x="24" y="24" width="1392" height="1332" rx="30" fill="rgba(255,255,255,0.72)" stroke="rgba(94,58,126,0.12)" />
-  <text x="54" y="74" font-size="18" letter-spacing="2" fill="#C55A6E">CODEX FLEET MONITOR</text>
-  <text x="54" y="124" font-size="54" font-weight="700" fill="#2D2140">See the Codex fleet, not just a table.</text>
-  <text x="54" y="160" font-size="20" fill="#756D87">Confidence, heartbeat freshness, workload, and resource pressure in one screen.</text>
-  <rect x="54" y="200" width="850" height="240" rx="28" fill="rgba(255,255,255,0.86)" stroke="rgba(94,58,126,0.10)" />
-  <circle cx="180" cy="320" r="78" fill="none" stroke="rgba(90,111,240,0.12)" stroke-width="24" />
-  <circle cx="180" cy="320" r="78" fill="none" stroke="url(#bluePink)" stroke-width="24" stroke-dasharray="${trustPercent * 4.9} 999" stroke-linecap="round" transform="rotate(-90 180 320)" />
-  <text x="180" y="330" text-anchor="middle" font-size="40" font-weight="700" fill="#2D2140">${total}</text>
-  <text x="290" y="290" font-size="28" font-weight="700" fill="#2D2140">Fleet pulse</text>
-  <text x="290" y="326" font-size="18" fill="#756D87">${trustPercent}% confirmed or observed</text>
-  <rect x="290" y="350" width="150" height="70" rx="20" fill="#F8F3FF" /><text x="314" y="378" font-size="16" fill="#756D87">Healthy HB</text><text x="314" y="407" font-size="28" font-weight="700" fill="#16B87A">${hb.healthy}</text>
-  <rect x="458" y="350" width="150" height="70" rx="20" fill="#FFF1E3" /><text x="482" y="378" font-size="16" fill="#756D87">Peak CPU</text><text x="482" y="407" font-size="28" font-weight="700" fill="#FF9B3D">${Math.round(data.resourceSummary.peak_host_cpu)}%</text>
-  <rect x="626" y="350" width="150" height="70" rx="20" fill="#FFF0F4" /><text x="650" y="378" font-size="16" fill="#756D87">Stale HB</text><text x="650" y="407" font-size="28" font-weight="700" fill="#FF5C74">${hb.stale}</text>
-  <rect x="930" y="200" width="432" height="240" rx="28" fill="rgba(255,255,255,0.86)" stroke="rgba(94,58,126,0.10)" />
-  <text x="960" y="246" font-size="28" font-weight="700" fill="#2D2140">Discovery mix</text>
-  <rect x="960" y="286" width="370" height="28" rx="14" fill="#EEF0FF" />
-  <rect x="960" y="286" width="${370 * widths.confirmed / 100}" height="28" rx="14" fill="url(#green)" />
-  <rect x="${960 + (370 * widths.confirmed / 100)}" y="286" width="${370 * widths.observed / 100}" height="28" fill="url(#orange)" />
-  <rect x="${960 + (370 * (widths.confirmed + widths.observed) / 100)}" y="286" width="${370 * widths.suspected / 100}" height="28" rx="14" fill="url(#rose)" />
-  <text x="960" y="352" font-size="18" fill="#2D2140">Confirmed: ${data.fleetSummary.confirmed_agents}</text>
-  <text x="960" y="386" font-size="18" fill="#2D2140">Observed: ${data.fleetSummary.observed_agents}</text>
-  <text x="960" y="420" font-size="18" fill="#2D2140">Suspected: ${data.fleetSummary.suspected_agents}</text>
-  <g transform="translate(54,470)"><rect width="310" height="120" rx="24" fill="#F8F3FF" /><text x="24" y="40" font-size="18" fill="#756D87">Confirmed agents</text><text x="24" y="82" font-size="42" font-weight="700" fill="#16B87A">${data.fleetSummary.confirmed_agents}</text></g>
-  <g transform="translate(384,470)"><rect width="310" height="120" rx="24" fill="#FFF1E3" /><text x="24" y="40" font-size="18" fill="#756D87">24h spend</text><text x="24" y="82" font-size="42" font-weight="700" fill="#FF9B3D">$${Number(data.fleetSummary.total_cost).toFixed(2)}</text></g>
-  <g transform="translate(714,470)"><rect width="310" height="120" rx="24" fill="#FFF0F4" /><text x="24" y="40" font-size="18" fill="#756D87">Delayed HB</text><text x="24" y="82" font-size="42" font-weight="700" fill="#FF5C74">${hb.delayed}</text></g>
-  <g transform="translate(1044,470)"><rect width="318" height="120" rx="24" fill="#EEF0FF" /><text x="24" y="40" font-size="18" fill="#756D87">Network flow</text><text x="24" y="82" font-size="34" font-weight="700" fill="#5A6FF0">${Math.round(data.resourceSummary.total_network_kbps)} kbps</text></g>
-  <rect x="54" y="622" width="640" height="220" rx="28" fill="rgba(255,255,255,0.86)" stroke="rgba(94,58,126,0.10)" />
-  <text x="84" y="666" font-size="30" font-weight="700" fill="#2D2140">Resource overview</text>
-  <text x="84" y="714" font-size="18" fill="#756D87">Average host CPU ${data.resourceSummary.avg_host_cpu}%</text>
-  <rect x="84" y="728" width="250" height="16" rx="8" fill="#EEF0FF" /><rect x="84" y="728" width="${2.5 * data.resourceSummary.avg_host_cpu}" height="16" rx="8" fill="#5A6FF0" />
-  <text x="84" y="786" font-size="18" fill="#756D87">Average memory ${data.resourceSummary.avg_memory_percent}%</text>
-  <rect x="84" y="800" width="250" height="16" rx="8" fill="#E6FFF2" /><rect x="84" y="800" width="${2.5 * data.resourceSummary.avg_memory_percent}" height="16" rx="8" fill="#16B87A" />
-  <text x="380" y="714" font-size="18" fill="#756D87">Peak disk ${data.resourceSummary.peak_disk_percent}%</text>
-  <rect x="380" y="728" width="250" height="16" rx="8" fill="#FFF2DE" /><rect x="380" y="728" width="${2.5 * data.resourceSummary.peak_disk_percent}" height="16" rx="8" fill="#FF9B3D" />
-  <text x="380" y="786" font-size="18" fill="#756D87">Hot hosts ${data.resourceSummary.hot_host_count}</text>
-  <text x="380" y="825" font-size="34" font-weight="700" fill="#2D2140">${Math.round(data.resourceSummary.total_network_kbps)} kbps</text>
-  <rect x="720" y="622" width="642" height="220" rx="28" fill="rgba(255,255,255,0.86)" stroke="rgba(94,58,126,0.10)" />
-  <text x="750" y="666" font-size="30" font-weight="700" fill="#2D2140">Heartbeat monitor</text>
-  <circle cx="840" cy="742" r="62" fill="none" stroke="#F0F1FF" stroke-width="22" />
-  <circle cx="840" cy="742" r="62" fill="none" stroke="#16B87A" stroke-width="22" stroke-dasharray="${healthyPct * 3.9} 999" transform="rotate(-90 840 742)" />
-  <circle cx="840" cy="742" r="62" fill="none" stroke="#FF9B3D" stroke-width="22" stroke-dasharray="${delayedPct * 3.9} 999" transform="rotate(${healthyPct * 3.6 - 90} 840 742)" />
-  <text x="840" y="750" text-anchor="middle" font-size="34" font-weight="700" fill="#2D2140">${hb.total}</text>
-  <text x="960" y="716" font-size="18" fill="#2D2140">Healthy: ${hb.healthy}</text>
-  <text x="960" y="752" font-size="18" fill="#2D2140">Delayed: ${hb.delayed}</text>
-  <text x="960" y="788" font-size="18" fill="#2D2140">Stale: ${hb.stale}</text>
-  <rect x="54" y="874" width="860" height="440" rx="28" fill="rgba(255,255,255,0.86)" stroke="rgba(94,58,126,0.10)" />
-  <text x="84" y="918" font-size="30" font-weight="700" fill="#2D2140">Agent cards</text>
-  ${data.agents.slice(0,4).map((agent, index) => {
-    const x = 84 + (index % 2) * 394;
-    const y = 950 + Math.floor(index / 2) * 172;
-    const confidence = Math.round(agent.confidence_score * 100);
-    const stroke = agent.discovery_level === 'confirmed' ? '#16B87A' : agent.discovery_level === 'observed' ? '#FF9B3D' : '#FF5C74';
-    const hbColor = agent.heartbeat_state === 'healthy' ? '#16B87A' : agent.heartbeat_state === 'delayed' ? '#FF9B3D' : '#FF5C74';
-    return `<g transform="translate(${x},${y})"><rect width="360" height="144" rx="24" fill="#FFFFFF" stroke="rgba(94,58,126,0.10)" /><rect width="8" height="144" rx="4" fill="${stroke}" /><text x="24" y="28" font-size="12" letter-spacing="1.5" fill="#C55A6E">${agent.codex_type.toUpperCase()}</text><text x="24" y="54" font-size="22" font-weight="700" fill="#2D2140">${agent.id}</text><text x="24" y="78" font-size="14" fill="#756D87">Heartbeat ${agent.heartbeat_state} · ${Math.round((agent.heartbeatAgeSeconds || 0) / 60)}m ago</text><circle cx="320" cy="74" r="8" fill="${hbColor}" /><text x="24" y="100" font-size="14" fill="#756D87">CPU ${Math.round(agent.process_cpu_percent || 0)}% · MEM ${Math.round(agent.process_memory_mb || 0)} MB</text><rect x="24" y="112" width="240" height="10" rx="5" fill="#EEF0FF" /><rect x="24" y="112" width="${2.4 * confidence}" height="10" rx="5" fill="url(#bluePink)" /><text x="278" y="121" font-size="14" fill="#2D2140">${confidence}%</text></g>`;
-  }).join('')}
-  <rect x="940" y="874" width="422" height="440" rx="28" fill="rgba(255,255,255,0.86)" stroke="rgba(94,58,126,0.10)" />
-  <text x="970" y="918" font-size="30" font-weight="700" fill="#2D2140">Hosts and jobs</text>
-  ${data.hosts.slice(0,3).map((host, index) => {
-    const y = 964 + index * 56;
-    return `<text x="970" y="${y}" font-size="18" fill="#2D2140">${host.hostname}</text><text x="970" y="${y + 22}" font-size="14" fill="#756D87">${host.environment} · CPU ${Math.round(host.cpu_percent)}% · ${host.running_count}/${host.agent_count} running</text>`;
-  }).join('')}
-  ${data.jobs.slice(0,3).map((job, index) => {
-    const y = 1142 + index * 44;
-    return `<circle cx="980" cy="${y - 6}" r="8" fill="#5A6FF0" /><text x="1000" y="${y}" font-size="18" fill="#2D2140">${job.title}</text><text x="1000" y="${y + 18}" font-size="14" fill="#756D87">${job.hostname} · ${job.outcome} · ${job.duration_seconds}s</text>`;
-  }).join('')}
+  <rect width="1600" height="1600" fill="url(#bg)"/>
+  <circle cx="1420" cy="80" r="220" fill="#ffd9c7" opacity="0.6"/>
+  <circle cx="120" cy="1470" r="210" fill="#ddd4ff" opacity="0.5"/>
+  <rect x="24" y="24" width="1552" height="1552" rx="34" fill="rgba(255,255,255,0.70)" stroke="rgba(87,54,140,0.12)"/>
+  <text x="60" y="76" font-size="18" letter-spacing="3" fill="#c75f74">UNIVERSAL AGENT COMMAND</text>
+  <text x="60" y="134" font-size="58" font-weight="700" fill="#281d3f">Run the agent fleet like an operations room.</text>
+  <text x="60" y="176" font-size="21" fill="#7b738d">Codex, Claude, Gemini, and OpenClaw in one provider-neutral monitoring board.</text>
+
+  <rect x="60" y="220" width="1010" height="420" rx="32" fill="rgba(255,255,255,0.84)" stroke="rgba(87,54,140,0.12)"/>
+  <text x="90" y="266" font-size="18" letter-spacing="2" fill="#c75f74">CONTROL ROOM</text>
+  <text x="90" y="306" font-size="34" font-weight="700" fill="#281d3f">Fleet pulse</text>
+  <circle cx="250" cy="445" r="132" fill="none" stroke="#e9e7ff" stroke-width="28"/>
+  <circle cx="250" cy="445" r="132" fill="none" stroke="url(#purple)" stroke-width="28" stroke-dasharray="${trustPercent * 8.3} 999" stroke-linecap="round" transform="rotate(-90 250 445)"/>
+  <text x="250" y="454" text-anchor="middle" font-size="72" font-weight="700" fill="#281d3f">${total}</text>
+  <text x="250" y="486" text-anchor="middle" font-size="16" letter-spacing="2" fill="#7b738d">AGENTS</text>
+  <text x="420" y="356" font-size="24" font-weight="700" fill="#281d3f">Discovery confidence</text>
+  <text x="860" y="356" font-size="20" fill="#7b738d">${trustPercent}% trusted</text>
+  <rect x="420" y="382" width="560" height="36" rx="18" fill="#ecebff"/>
+  <rect x="420" y="382" width="${5.6 * confirmedPct}" height="36" rx="18" fill="url(#green)"/>
+  <rect x="${420 + 5.6 * confirmedPct}" y="382" width="${5.6 * observedPct}" height="36" fill="url(#orange)"/>
+  <rect x="${420 + 5.6 * (confirmedPct + observedPct)}" y="382" width="${5.6 * suspectedPct}" height="36" rx="18" fill="url(#pink)"/>
+  <text x="420" y="458" font-size="18" fill="#281d3f">Provider mix</text>
+  ${providerRows}
+
+  <rect x="1098" y="220" width="442" height="420" rx="32" fill="rgba(255,255,255,0.84)" stroke="rgba(87,54,140,0.12)"/>
+  <text x="1132" y="266" font-size="18" letter-spacing="2" fill="#c75f74">TELEMETRY</text>
+  <text x="1132" y="306" font-size="34" font-weight="700" fill="#281d3f">Pressure radar</text>
+  <circle cx="1260" cy="446" r="106" fill="none" stroke="#ecebff" stroke-width="24"/>
+  <circle cx="1260" cy="446" r="106" fill="none" stroke="#18bb7d" stroke-width="24" stroke-dasharray="${healthyPct * 6.6} 999" transform="rotate(-90 1260 446)"/>
+  <circle cx="1260" cy="446" r="106" fill="none" stroke="#ff9c3f" stroke-width="24" stroke-dasharray="${delayedPct * 6.6} 999" transform="rotate(${healthyPct * 3.6 - 90} 1260 446)"/>
+  <text x="1260" y="454" text-anchor="middle" font-size="52" font-weight="700" fill="#281d3f">${hb.total}</text>
+  <text x="1260" y="486" text-anchor="middle" font-size="16" fill="#7b738d">heartbeat set</text>
+  <text x="1380" y="392" font-size="18" fill="#281d3f">Healthy ${hb.healthy}</text>
+  <text x="1380" y="432" font-size="18" fill="#281d3f">Delayed ${hb.delayed}</text>
+  <text x="1380" y="472" font-size="18" fill="#281d3f">Stale ${hb.stale}</text>
+  <text x="1132" y="556" font-size="18" fill="#7b738d">Average CPU ${data.resourceSummary.avg_host_cpu}%</text>
+  <rect x="1132" y="570" width="340" height="16" rx="8" fill="#ecebff"/><rect x="1132" y="570" width="${3.4 * data.resourceSummary.avg_host_cpu}" height="16" rx="8" fill="#6d55ff"/>
+  <text x="1132" y="614" font-size="18" fill="#7b738d">Average memory ${data.resourceSummary.avg_memory_percent}%</text>
+  <rect x="1132" y="628" width="340" height="16" rx="8" fill="#e8fff4"/><rect x="1132" y="628" width="${3.4 * data.resourceSummary.avg_memory_percent}" height="16" rx="8" fill="#18bb7d"/>
+
+  <rect x="60" y="674" width="360" height="140" rx="28" fill="#f3f1ff"/><text x="88" y="718" font-size="18" fill="#7b738d">Confirmed agents</text><text x="88" y="774" font-size="52" font-weight="700" fill="#18bb7d">${data.fleetSummary.confirmed_agents}</text>
+  <rect x="438" y="674" width="360" height="140" rx="28" fill="#fff1e2"/><text x="466" y="718" font-size="18" fill="#7b738d">24h spend</text><text x="466" y="774" font-size="52" font-weight="700" fill="#ff9c3f">$${Number(data.fleetSummary.total_cost).toFixed(2)}</text>
+  <rect x="816" y="674" width="360" height="140" rx="28" fill="#fff0f4"/><text x="844" y="718" font-size="18" fill="#7b738d">Stale HB</text><text x="844" y="774" font-size="52" font-weight="700" fill="#ff5f7b">${hb.stale}</text>
+  <rect x="1194" y="674" width="346" height="140" rx="28" fill="#eef0ff"/><text x="1222" y="718" font-size="18" fill="#7b738d">Network flow</text><text x="1222" y="774" font-size="44" font-weight="700" fill="#5d72f2">${Math.round(data.resourceSummary.total_network_kbps)} kbps</text>
+
+  <rect x="60" y="850" width="1000" height="680" rx="32" fill="rgba(255,255,255,0.86)" stroke="rgba(87,54,140,0.12)"/>
+  <text x="94" y="898" font-size="18" letter-spacing="2" fill="#c75f74">PROCESSES</text>
+  <text x="94" y="938" font-size="34" font-weight="700" fill="#281d3f">Agent telemetry</text>
+  ${agentBlock(data.agents[0], 94, 972)}
+  ${agentBlock(data.agents[1], 560, 972)}
+  ${agentBlock(data.agents[2], 94, 1210)}
+  ${agentBlock(data.agents[3], 560, 1210)}
+
+  <rect x="1090" y="850" width="450" height="330" rx="32" fill="rgba(255,255,255,0.86)" stroke="rgba(87,54,140,0.12)"/>
+  <text x="1124" y="898" font-size="18" letter-spacing="2" fill="#c75f74">HOTSPOTS</text>
+  <text x="1124" y="938" font-size="34" font-weight="700" fill="#281d3f">Host pressure</text>
+  ${hostRows}
+
+  <rect x="1090" y="1200" width="450" height="330" rx="32" fill="rgba(255,255,255,0.86)" stroke="rgba(87,54,140,0.12)"/>
+  <text x="1124" y="1248" font-size="18" letter-spacing="2" fill="#c75f74">EXECUTION</text>
+  <text x="1124" y="1288" font-size="34" font-weight="700" fill="#281d3f">Recent jobs</text>
+  ${jobRows}
 </svg>`;
 
 writeFileSync(outputPath, svg);

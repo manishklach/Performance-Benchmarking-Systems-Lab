@@ -3,114 +3,150 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Codex Agent Monitor</title>
+    <title>Universal Agent Monitor</title>
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
     <main class="shell">
-      <section class="hero panel-surface">
+      <section class="hero">
         <div class="hero-copy">
-          <p class="eyebrow">Codex Fleet Monitor</p>
-          <h1>See the Codex fleet, not just a table.</h1>
+          <p class="eyebrow">Universal Agent Command</p>
+          <h1>Run the agent fleet like an operations room.</h1>
           <p class="lede">
-            Live operational posture across confirmed, observed, and suspected Codex agents with confidence, coverage, workload, heartbeat freshness, and resource pressure in one screen.
+            Discovery trust, provider mix, heartbeat freshness, host pressure, process load, and job flow in one visual board for Codex, Claude, Gemini, OpenClaw, and custom runtimes.
           </p>
         </div>
         <div class="hero-side">
-          <div class="stamp-card">
+          <div class="stamp">
             <span>Generated</span>
             <strong id="generatedAt">-</strong>
           </div>
-          <div class="stamp-card accent-orange">
-            <span>Source</span>
-            <strong>SQLite sample fleet</strong>
+          <div class="stamp accent">
+            <span>Scope</span>
+            <strong id="providerCount">-</strong>
           </div>
         </div>
       </section>
 
-      <section class="top-grid">
-        <section class="panel-surface spotlight">
-          <div class="section-title">
-            <h2>Fleet pulse</h2>
-            <p>Immediate operating picture</p>
+      <section class="command-grid">
+        <section class="panel command-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow small">Control Room</p>
+              <h2>Fleet pulse</h2>
+            </div>
+            <div class="pill-row" id="topPills"></div>
           </div>
-          <div class="spotlight-grid">
-            <div class="ring-card">
-              <div class="ring" id="fleetRing"><span id="ringTotal">0</span></div>
-              <div>
-                <h3>Discovery trust</h3>
-                <p id="ringCaption" class="muted">-</p>
+          <div class="pulse-layout">
+            <div class="mega-ring-wrap">
+              <div class="mega-ring" id="fleetRing">
+                <div class="mega-ring-core">
+                  <strong id="ringTotal">0</strong>
+                  <span>agents</span>
+                </div>
+              </div>
+              <p id="ringCaption" class="ring-caption">-</p>
+            </div>
+
+            <div class="confidence-stage">
+              <div class="subpanel">
+                <div class="subpanel-head">
+                  <h3>Discovery confidence</h3>
+                  <span id="trustPercent">0%</span>
+                </div>
+                <div class="confidence-strip" id="stackChart"></div>
+                <div class="confidence-legend" id="mixLegend"></div>
+              </div>
+
+              <div class="subpanel">
+                <div class="subpanel-head">
+                  <h3>Provider mix</h3>
+                  <span id="providerTotal">0</span>
+                </div>
+                <div class="provider-grid" id="providerGrid"></div>
+              </div>
+
+              <div class="subpanel">
+                <div class="subpanel-head">
+                  <h3>Live operating signals</h3>
+                  <span>Now</span>
+                </div>
+                <div class="signal-matrix" id="signalBoard"></div>
               </div>
             </div>
-            <div class="signal-board" id="signalBoard"></div>
           </div>
         </section>
 
-        <section class="panel-surface stratification">
-          <div class="section-title">
-            <h2>Discovery mix</h2>
-            <p>How much of the fleet is proven versus heuristic</p>
+        <section class="panel radar-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow small">Telemetry</p>
+              <h2>Pressure radar</h2>
+            </div>
           </div>
-          <div class="stack-chart" id="stackChart"></div>
-          <div class="mix-legend" id="mixLegend"></div>
+          <div class="radar-grid">
+            <div class="radar-chart" id="heartbeatRadar"></div>
+            <div class="telemetry-stack" id="resourceSummary"></div>
+          </div>
         </section>
       </section>
 
-      <section class="stats-grid" id="stats"></section>
+      <section class="metrics-band" id="stats"></section>
 
-      <section class="resource-grid">
-        <section class="panel-surface resource-panel">
-          <div class="section-title">
-            <h2>Resource overview</h2>
-            <p>Average and peak infrastructure usage</p>
-          </div>
-          <div class="resource-summary" id="resourceSummary"></div>
-        </section>
-
-        <section class="panel-surface resource-panel">
-          <div class="section-title">
-            <h2>Heartbeat monitor</h2>
-            <p>Freshness across the fleet</p>
-          </div>
-          <div class="heartbeat-summary" id="heartbeatSummary"></div>
-        </section>
-      </section>
-
-      <section class="main-grid">
-        <section class="panel-surface agents-panel">
-          <div class="section-title">
-            <h2>Agent cards</h2>
-            <p>Confidence, status, heartbeat, workspace, process CPU, memory, and disk activity</p>
+      <section class="operations-grid">
+        <section class="panel agent-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow small">Processes</p>
+              <h2>Agent telemetry</h2>
+            </div>
+            <span class="panel-note">Provider, heartbeat, CPU, memory, disk I/O, confidence</span>
           </div>
           <div class="agent-grid" id="agentsGrid"></div>
         </section>
 
-        <section class="rail">
-          <section class="panel-surface">
-            <div class="section-title">
-              <h2>Hosts</h2>
-              <p>Coverage and machine health by environment</p>
+        <section class="side-column">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow small">Hotspots</p>
+                <h2>Host pressure</h2>
+              </div>
             </div>
-            <div id="hostCards" class="host-grid"></div>
+            <div class="host-grid" id="hostCards"></div>
           </section>
 
-          <section class="panel-surface">
-            <div class="section-title">
-              <h2>Suspected findings</h2>
-              <p>Signals that still need confirmation</p>
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow small">Review Queue</p>
+                <h2>Suspected findings</h2>
+              </div>
             </div>
-            <div id="findingsList" class="findings-list"></div>
+            <div class="findings-list" id="findingsList"></div>
           </section>
         </section>
       </section>
 
-      <section class="bottom-grid">
-        <section class="panel-surface timeline-panel">
-          <div class="section-title">
-            <h2>Recent jobs</h2>
-            <p>Timeline of active and completed Codex work</p>
+      <section class="timeline-grid">
+        <section class="panel jobs-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow small">Execution</p>
+              <h2>Recent jobs</h2>
+            </div>
           </div>
-          <div id="jobsList" class="jobs-list"></div>
+          <div class="jobs-list" id="jobsList"></div>
+        </section>
+
+        <section class="panel hosts-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow small">Heat Map</p>
+              <h2>Hot hosts</h2>
+            </div>
+          </div>
+          <div class="hot-hosts" id="hotHosts"></div>
         </section>
       </section>
     </main>
