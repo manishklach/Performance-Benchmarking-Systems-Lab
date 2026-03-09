@@ -1,3 +1,6 @@
 data/monitor.db
 data/server.log
 data/server.err.log
+data/dashboard-preview.png
+data/dashboard-preview.svg
+data/dashboard-ui.png
