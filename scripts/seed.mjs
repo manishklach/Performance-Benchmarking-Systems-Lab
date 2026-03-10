@@ -70,7 +70,7 @@ const insertMany = (sql, rows) => {
 };
 
 insertMany('INSERT INTO hosts (id, hostname, environment, platform, owner, last_seen_at) VALUES (?, ?, ?, ?, ?, ?)', hosts);
-insertMany(`INSERT INTO agent_instances (id, host_id, provider, agent_family, codex_type, discovery_level, status, confidence_score, user_name, workspace_name, repo_path, current_task, first_seen_at, last_seen_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, agents);
+insertMany(`INSERT INTO agent_instances (id, host_id, provider, agent_family, runtime_type, discovery_level, status, confidence_score, user_name, workspace_name, repo_path, current_task, first_seen_at, last_seen_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, agents);
 insertMany(`INSERT INTO discoveries (id, agent_id, source, process_signature, install_signature, confidence_score, observed_at, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, discoveries);
 insertMany(`INSERT INTO heartbeats (id, agent_id, status, cpu_percent, memory_mb, tokens_used, cost_usd, recorded_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, heartbeats);
 insertMany(`INSERT INTO jobs (id, agent_id, title, outcome, started_at, ended_at, duration_seconds, repo_path, model_name, prompt_summary) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, jobs);

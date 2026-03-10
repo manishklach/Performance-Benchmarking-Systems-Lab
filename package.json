@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Codex-only fleet monitor MVP with SQLite-backed sample data and dashboard.",
+  "description": "Universal multi-agent monitor MVP with SQLite-backed sample data and dashboard.",
   "scripts": {
     "seed": "node scripts/seed.mjs",
     "start": "node src/server.mjs",

@@ -38,7 +38,7 @@ export function buildApp() {
     const url = new URL(request.url, 'http://localhost');
 
     if (url.pathname === '/api/health') {
-      json(response, 200, { ok: true, service: 'codex-agent-monitor' });
+      json(response, 200, { ok: true, service: 'universal-agent-monitor' });
       return;
     }
 
@@ -81,5 +81,5 @@ export function startServer({ port = 3000 } = {}) {
 if (process.argv[1] === __filename) {
   const port = Number(process.env.PORT || '3000');
   const server = await startServer({ port });
-  console.log(`Codex Agent Monitor listening on http://localhost:${server.address().port}`);
+  console.log(`Universal Agent Monitor listening on http://localhost:${server.address().port}`);
 }

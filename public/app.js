@@ -65,6 +65,15 @@ function metricCard(label, value, detail, tone) {
   `;
 }
 
+const dashboardState = {
+  data: null,
+  filters: {
+    provider: 'all',
+    status: 'all',
+    environment: 'all'
+  }
+};
+
 function progressRail(label, value, suffix, toneClass) {
   const numeric = Math.max(0, Math.min(100, Number(value || 0)));
   return `
@@ -151,7 +160,7 @@ function renderSignals(summary, resources, heartbeatSummary) {
 }
 
 function renderMetrics(summary, resources, heartbeatSummary, providerSummary) {
-  const largestProvider = providerSummary[0];
+  const largestProvider = providerSummary[0] || { provider: 'n/a', count: 0 };
   const cards = [
     metricCard('Confirmed agents', summary.confirmed_agents, 'Verified evidence on-host or via managed launcher flow.', 'good'),
     metricCard('Resource pressure', `${whole(resources.avg_host_cpu)}%`, 'Average fleet CPU with memory and disk pressure tracked below.', 'neutral'),
@@ -159,6 +168,40 @@ function renderMetrics(summary, resources, heartbeatSummary, providerSummary) {
     metricCard('Heartbeat risk', heartbeatSummary.stale, 'Agents outside the stale threshold and needing operator attention.', 'danger')
   ];
   document.getElementById('stats').innerHTML = cards.join('');
+}
+
+function populateSelect(id, values, allLabel) {
+  const select = document.getElementById(id);
+  const current = select.value || 'all';
+  select.innerHTML = [
+    `<option value="all">${allLabel}</option>`,
+    ...values.map((value) => `<option value="${value}">${value}</option>`)
+  ].join('');
+  select.value = values.includes(current) ? current : 'all';
+}
+
+function syncFilterOptions(agents) {
+  populateSelect('providerFilter', [...new Set(agents.map((agent) => agent.provider))].sort(), 'All providers');
+  populateSelect('statusFilter', [...new Set(agents.map((agent) => agent.status))].sort(), 'All statuses');
+  populateSelect('environmentFilter', [...new Set(agents.map((agent) => agent.environment))].sort(), 'All environments');
+}
+
+function getFilteredAgents(agents) {
+  return agents.filter((agent) => {
+    if (dashboardState.filters.provider !== 'all' && agent.provider !== dashboardState.filters.provider) return false;
+    if (dashboardState.filters.status !== 'all' && agent.status !== dashboardState.filters.status) return false;
+    if (dashboardState.filters.environment !== 'all' && agent.environment !== dashboardState.filters.environment) return false;
+    return true;
+  });
+}
+
+function renderFilterSummary(total, visible) {
+  const activeFilters = Object.entries(dashboardState.filters)
+    .filter(([, value]) => value !== 'all')
+    .map(([key, value]) => `${key}: ${value}`);
+
+  const detail = activeFilters.length ? activeFilters.join(' | ') : 'all agents';
+  document.getElementById('filterSummary').textContent = `Showing ${visible} of ${total} agents | ${detail}`;
 }
 
 function renderRadar(heartbeatSummary) {
@@ -198,6 +241,11 @@ function renderResourceSummary(resources) {
 }
 
 function renderAgents(agents) {
+  if (!agents.length) {
+    document.getElementById('agentsGrid').innerHTML = '<p class="empty">No agents match the active filters.</p>';
+    return;
+  }
+
   document.getElementById('agentsGrid').innerHTML = agents.map((agent) => {
     const confidence = Math.round(agent.confidence_score * 100);
     const memoryPercent = Math.min(100, (agent.process_memory_mb || 0) / 10);
@@ -240,6 +288,7 @@ function renderAgents(agents) {
         <dl class="agent-meta">
           <div><dt>Host</dt><dd>${agent.hostname}</dd></div>
           <div><dt>User</dt><dd>${agent.user_name}</dd></div>
+          <div><dt>Runtime</dt><dd>${agent.runtime_type}</dd></div>
           <div><dt>Uptime</dt><dd>${whole(agent.uptime_seconds / 60)} min</dd></div>
           <div><dt>Restarts</dt><dd>${agent.restart_count}</dd></div>
         </dl>
@@ -328,9 +377,9 @@ function renderHotHosts(hosts) {
   `).join('');
 }
 
-async function loadDashboard() {
-  const response = await fetch('/api/dashboard');
-  const data = await response.json();
+function renderDashboard() {
+  const data = dashboardState.data;
+  const filteredAgents = getFilteredAgents(data.agents);
 
   document.getElementById('generatedAt').textContent = formatTimestamp(data.generatedAt);
   buildRing(data.fleetSummary);
@@ -341,13 +390,35 @@ async function loadDashboard() {
   renderMetrics(data.fleetSummary, data.resourceSummary, data.heartbeatSummary, data.providerSummary);
   renderRadar(data.heartbeatSummary);
   renderResourceSummary(data.resourceSummary);
-  renderAgents(data.agents);
+  renderAgents(filteredAgents);
+  renderFilterSummary(data.agents.length, filteredAgents.length);
   renderHosts(data.hosts);
   renderFindings(data.findings);
   renderJobs(data.jobs);
   renderHotHosts(data.hotHosts);
 }
 
+function attachFilters() {
+  [
+    ['providerFilter', 'provider'],
+    ['statusFilter', 'status'],
+    ['environmentFilter', 'environment']
+  ].forEach(([id, key]) => {
+    document.getElementById(id).addEventListener('change', (event) => {
+      dashboardState.filters[key] = event.target.value;
+      renderDashboard();
+    });
+  });
+}
+
+async function loadDashboard() {
+  const response = await fetch('/api/dashboard');
+  dashboardState.data = await response.json();
+  syncFilterOptions(dashboardState.data.agents);
+  renderDashboard();
+}
+
+attachFilters();
 loadDashboard().catch((error) => {
   document.body.innerHTML = `<main class="shell"><section class="panel"><h1>Dashboard failed to load</h1><p>${error.message}</p></section></main>`;
 });

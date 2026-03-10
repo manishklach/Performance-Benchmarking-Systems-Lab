@@ -16,6 +16,7 @@ test('seeded sample database contains multi-provider agent data', () => {
   assert.equal(rows.agent_instances.some((row) => row.provider === 'anthropic'), true);
   assert.equal(rows.agent_instances.some((row) => row.provider === 'google'), true);
   assert.equal(rows.agent_instances.some((row) => row.provider === 'openclaw'), true);
+  assert.equal(rows.agent_instances.every((row) => typeof row.runtime_type === 'string'), true);
 });
 
 test('dashboard api returns provider-neutral fleet summary', async () => {
@@ -32,6 +33,7 @@ test('dashboard api returns provider-neutral fleet summary', async () => {
   assert.equal(payload.heartbeatSummary.total, 4);
   assert.equal(payload.agents[0].provider, 'openai');
   assert.equal(typeof payload.agents[0].agent_family, 'string');
+  assert.equal(typeof payload.agents[0].runtime_type, 'string');
 
   server.close();
   await once(server, 'close');

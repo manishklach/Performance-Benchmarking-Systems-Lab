@@ -46,11 +46,13 @@ That makes it possible to monitor heterogeneous agent fleets through one normali
 
 - confirmed, observed, and suspected discovery states
 - provider-neutral fleet inventory
+- normalized runtime metadata with `provider`, `agent_family`, and `runtime_type`
 - host CPU, memory, disk, and network telemetry
 - per-agent process CPU, memory, disk I/O, uptime, and restart count
 - heartbeat freshness with `healthy`, `delayed`, and `stale` states
 - hot-host ranking for machines under the highest pressure
 - recent job timeline with model, duration, provider, and outcome
+- dashboard filters for provider, status, and environment
 - raw sample DB export through JSON endpoints
 
 ## Architecture
@@ -105,6 +107,21 @@ npm test
 - `/api/health`
 - `/api/dashboard`
 - `/api/sample-db`
+
+## Normalized agent schema
+
+Each monitored runtime is modeled as a provider-neutral agent instance with fields such as:
+
+- `provider`
+- `agent_family`
+- `runtime_type`
+- `host_id`
+- `status`
+- `discovery_level`
+- `confidence_score`
+- `cpu`, `memory`, `disk`, `network`
+- `tokens_used`, `cost_usd`
+- `job metadata`
 
 ## Seeded demo data
 

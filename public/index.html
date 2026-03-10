@@ -102,6 +102,27 @@
             </div>
             <span class="panel-note">Provider, heartbeat, CPU, memory, disk I/O, confidence</span>
           </div>
+          <div class="filter-bar">
+            <label class="filter-field">
+              <span>Provider</span>
+              <select id="providerFilter">
+                <option value="all">All providers</option>
+              </select>
+            </label>
+            <label class="filter-field">
+              <span>Status</span>
+              <select id="statusFilter">
+                <option value="all">All statuses</option>
+              </select>
+            </label>
+            <label class="filter-field">
+              <span>Environment</span>
+              <select id="environmentFilter">
+                <option value="all">All environments</option>
+              </select>
+            </label>
+            <div class="filter-summary" id="filterSummary">Showing all agents</div>
+          </div>
           <div class="agent-grid" id="agentsGrid"></div>
         </section>
 

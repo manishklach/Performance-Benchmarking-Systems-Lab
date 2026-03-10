@@ -73,7 +73,7 @@
       <text x="46" y="103" font-size="13" fill="#ff5f7b">openai</text>
       <circle cx="412" cy="98" r="9" fill="#ff5f7b"/>
       <text x="26" y="136" font-size="15" fill="#7b738d">Generate dashboard and seed data</text>
-      <text x="26" y="160" font-size="14" fill="#7b738d">Heartbeat 133m ago</text>
+      <text x="26" y="160" font-size="14" fill="#7b738d">Heartbeat 666m ago</text>
       <text x="26" y="184" font-size="13" fill="#7b738d">CPU 18%  MEM 612 MB  IO 90r/46w</text>
       <rect x="26" y="194" width="300" height="10" rx="5" fill="#ecebff"/>
       <rect x="26" y="194" width="294" height="10" rx="5" fill="url(#purple)"/>
@@ -90,7 +90,7 @@
       <text x="46" y="103" font-size="13" fill="#ff5f7b">anthropic</text>
       <circle cx="412" cy="98" r="9" fill="#ff5f7b"/>
       <text x="26" y="136" font-size="15" fill="#7b738d">Awaiting review task</text>
-      <text x="26" y="160" font-size="14" fill="#7b738d">Heartbeat 136m ago</text>
+      <text x="26" y="160" font-size="14" fill="#7b738d">Heartbeat 669m ago</text>
       <text x="26" y="184" font-size="13" fill="#7b738d">CPU 6%  MEM 420 MB  IO 24r/18w</text>
       <rect x="26" y="194" width="300" height="10" rx="5" fill="#ecebff"/>
       <rect x="26" y="194" width="246" height="10" rx="5" fill="url(#purple)"/>
@@ -107,7 +107,7 @@
       <text x="46" y="103" font-size="13" fill="#ff5f7b">google</text>
       <circle cx="412" cy="98" r="9" fill="#ff5f7b"/>
       <text x="26" y="136" font-size="15" fill="#7b738d">Correlate workspace events with pod scan</text>
-      <text x="26" y="160" font-size="14" fill="#7b738d">Heartbeat 134m ago</text>
+      <text x="26" y="160" font-size="14" fill="#7b738d">Heartbeat 667m ago</text>
       <text x="26" y="184" font-size="13" fill="#7b738d">CPU 27%  MEM 734 MB  IO 140r/112w</text>
       <rect x="26" y="194" width="300" height="10" rx="5" fill="#ecebff"/>
       <rect x="26" y="194" width="189" height="10" rx="5" fill="url(#purple)"/>
@@ -124,7 +124,7 @@
       <text x="46" y="103" font-size="13" fill="#ff5f7b">openclaw</text>
       <circle cx="412" cy="98" r="9" fill="#ff5f7b"/>
       <text x="26" y="136" font-size="15" fill="#7b738d">Retry after missing heartbeat</text>
-      <text x="26" y="160" font-size="14" fill="#7b738d">Heartbeat 179m ago</text>
+      <text x="26" y="160" font-size="14" fill="#7b738d">Heartbeat 712m ago</text>
       <text x="26" y="184" font-size="13" fill="#7b738d">CPU 2%  MEM 188 MB  IO 8r/5w</text>
       <rect x="26" y="194" width="300" height="10" rx="5" fill="#ecebff"/>
       <rect x="26" y="194" width="171" height="10" rx="5" fill="url(#purple)"/>
