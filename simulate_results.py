@@ -13,6 +13,7 @@ from demo import run_demo
 
 DEFAULT_TRUE_WINNER = "candidate_consistent"
 BASE_DIR = Path(__file__).resolve().parent
+REPORTS_DIR = BASE_DIR / "reports"
 
 
 def parse_args() -> argparse.Namespace:
@@ -239,7 +240,7 @@ def create_plots(records: list[dict[str, object]], plots_dir: Path) -> None:
 
 def main() -> None:
     args = parse_args()
-    out_dir = BASE_DIR
+    out_dir = REPORTS_DIR
     csv_path = out_dir / "simulation_results.csv"
     json_path = out_dir / "simulation_summary.json"
     html_path = out_dir / "simulation_summary.html"

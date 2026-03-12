@@ -25,6 +25,7 @@ from triton_adapter import build_triton_candidates, triton_available
 
 torch.set_num_threads(max(1, min(4, psutil.cpu_count(logical=False) or 1)))
 BASE_DIR = Path(__file__).resolve().parent
+RUNS_DIR = BASE_DIR / "runs"
 
 M = 128
 K = 128
@@ -210,9 +211,10 @@ def write_reports(
     final_summaries: Dict[str, CandidateSummary],
     report_payload: Dict[str, object],
 ) -> None:
-    report_path = BASE_DIR / "latest_run.txt"
-    json_path = BASE_DIR / "latest_run.json"
-    html_path = BASE_DIR / "latest_run.html"
+    RUNS_DIR.mkdir(parents=True, exist_ok=True)
+    report_path = RUNS_DIR / "latest_run.txt"
+    json_path = RUNS_DIR / "latest_run.json"
+    html_path = RUNS_DIR / "latest_run.html"
     lines = [
         "Noise-aware kernel benchmarking demo",
         f"naive_winner={naive.name if naive else 'none'}",

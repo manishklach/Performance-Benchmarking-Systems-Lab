@@ -8,11 +8,12 @@ import matplotlib.pyplot as plt
 
 
 BASE_DIR = Path(__file__).resolve().parent
-ASSETS_DIR = BASE_DIR / "visual_assets"
+REPORTS_DIR = BASE_DIR / "reports"
+ASSETS_DIR = REPORTS_DIR / "visual_assets"
 PLOTS_DIR = ASSETS_DIR / "plots"
 DIAGRAMS_DIR = ASSETS_DIR / "diagrams"
 DECK_DIR = ASSETS_DIR / "deck"
-SIM_SUMMARY = BASE_DIR / "simulation_summary.json"
+SIM_SUMMARY = REPORTS_DIR / "simulation_summary.json"
 
 
 def load_payload() -> dict[str, object]:

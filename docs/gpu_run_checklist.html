@@ -84,10 +84,10 @@
     <div class="step">
       <p>After each run, inspect:</p>
       <ul>
-        <li><code>latest_run.html</code></li>
-        <li><code>latest_run.json</code></li>
-        <li><code>latest_run.txt</code></li>
-        <li><code>batch_outputs/triton_matmul_generated/triton_batch_summary.html</code></li>
+        <li><code>runs/latest_run.html</code></li>
+        <li><code>runs/latest_run.json</code></li>
+        <li><code>runs/latest_run.txt</code></li>
+        <li><code>runs/batch_outputs/triton_matmul_generated/triton_batch_summary.html</code></li>
       </ul>
       <p>These show the naive winner, finalist-pair analysis, final decision, and contamination rates.</p>
     </div>
@@ -98,7 +98,7 @@
         <li>Run <code>setup_gpu.py</code></li>
         <li>Run Triton matmul once and verify reports are generated</li>
         <li>Run Triton softmax once and verify reports are generated</li>
-        <li>Capture one or two screenshots of <code>latest_run.html</code> and terminal output for internal sharing</li>
+        <li>Capture one or two screenshots of <code>runs/latest_run.html</code> and terminal output for internal sharing</li>
         <li>If telemetry is stable, consider adding a Triton batch simulator next</li>
       </ul>
     </div>

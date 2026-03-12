@@ -35,46 +35,46 @@
 <body>
   <main>
     <h1>Key Findings</h1>
-    <p class="hero"><strong>Headline.</strong> In the latest 50-run CPU-backed simulation, naive raw-median selection chose the wrong winner in every run, while the contamination-aware finalist-pair control loop produced zero false selections by preferring either a gated promotion or a defer outcome.</p>
+    <p class="hero"><strong>Headline.</strong> In the latest 20-run CPU-backed simulation, naive raw-median selection still produced frequent false winners, while the contamination-aware finalist-pair control loop preferred defer or reject outcomes rather than promoting unstable evidence.</p>
 
     <div class="metrics">
       <div class="metric">
         <div class="label">Simulation runs</div>
-        <div class="value">50</div>
+        <div class="value">20</div>
       </div>
       <div class="metric">
         <div class="label">Naive false winners</div>
-        <div class="value warn">50</div>
+        <div class="value warn">12</div>
       </div>
       <div class="metric">
         <div class="label">Correct final promotions</div>
-        <div class="value good">36</div>
+        <div class="value good">1</div>
       </div>
       <div class="metric">
         <div class="label">False final promotions</div>
-        <div class="value good">1</div>
+        <div class="value good">0</div>
       </div>
     </div>
 
     <h2>Interpretation</h2>
     <ul>
       <li>The synthetic noisy candidate still wins by naive all-trial median because contaminated trials make it appear spuriously fast.</li>
-      <li>The contamination-aware engine mostly promotes the intended winner, <code>candidate_consistent</code>, and otherwise defers instead of over-promoting.</li>
-      <li>The remaining one false promotion indicates the control loop is already directionally strong, while still leaving room for stricter evidence rules in future iterations.</li>
+      <li>The contamination-aware engine now behaves conservatively under noisier simulation conditions, preferring defer or reject instead of forcing promotion on weak evidence.</li>
+      <li>The absence of false promotions in the latest snapshot is useful, but the low promotion count also shows the CPU simulation is currently harsher than the earlier tuned runs.</li>
       <li>This is the right prototype shape for demonstrating the patent thesis: telemetry-conditioned contamination state plus pairwise ambiguity-guided reruns plus promotion gating.</li>
     </ul>
 
     <h2>Result Plots</h2>
     <div class="grid">
       <div>
-        <img src="plots/selection_outcomes.png" alt="Selection outcomes plot">
+        <img src="../reports/plots/selection_outcomes.png" alt="Selection outcomes plot">
       </div>
       <div>
-        <img src="plots/final_gain_vs_lcb.png" alt="Final gain versus lower confidence bound plot">
+        <img src="../reports/plots/final_gain_vs_lcb.png" alt="Final gain versus lower confidence bound plot">
       </div>
     </div>
 
-    <p style="margin-top:18px;"><img src="plots/decision_timeline.png" alt="Decision timeline plot"></p>
+    <p style="margin-top:18px;"><img src="../reports/plots/decision_timeline.png" alt="Decision timeline plot"></p>
 
     <h2>Where To Go Next</h2>
     <ul>

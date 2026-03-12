@@ -45,23 +45,23 @@
     <div class="metric-row">
       <div class="metric">
         <div class="label">Simulation runs</div>
-        <div class="value">50</div>
+        <div class="value">20</div>
       </div>
       <div class="metric">
         <div class="label">Naive false winners</div>
-        <div class="value">50</div>
+        <div class="value">12</div>
       </div>
       <div class="metric">
         <div class="label">Correct promotions</div>
-        <div class="value">36</div>
-      </div>
-      <div class="metric">
-        <div class="label">False promotions</div>
         <div class="value">1</div>
       </div>
       <div class="metric">
+        <div class="label">False promotions</div>
+        <div class="value">0</div>
+      </div>
+      <div class="metric">
         <div class="label">Defers</div>
-        <div class="value">13</div>
+        <div class="value">16</div>
       </div>
     </div>
 
@@ -84,11 +84,11 @@
     <h2>Run Artifacts</h2>
     <div class="grid">
       <div class="card">
-        <h3><a href="latest_run.html">Latest Single Run</a></h3>
+        <h3><a href="../runs/latest_run.html">Latest Single Run</a></h3>
         <p>Single-run benchmark report with finalist analysis and decision output.</p>
       </div>
       <div class="card">
-        <h3><a href="simulation_summary.html">Simulation Summary</a></h3>
+        <h3><a href="../reports/simulation_summary.html">Simulation Summary</a></h3>
         <p>Batch simulation report covering repeated sessions and aggregate behavior.</p>
       </div>
       <div class="card">
@@ -100,7 +100,7 @@
         <p>Generated report listing Triton matmul variants and optional GPU batch results.</p>
       </div>
       <div class="card">
-        <h3><a href="visual_assets/visual_gallery.html">Visual Gallery</a></h3>
+        <h3><a href="../reports/visual_assets/visual_gallery.html">Visual Gallery</a></h3>
         <p>Standalone SVG diagrams and higher-quality plots for slides and demos.</p>
       </div>
     </div>
@@ -110,15 +110,15 @@
       <h3>Repeated Triton generated-variant runs</h3>
       <p>Use the GPU batch runner to benchmark the generated matmul variants repeatedly and emit a dedicated HTML/CSV/JSON/plot bundle:</p>
       <p><code>python triton_batch_runner.py --runs 12 --workload matmul --candidate-mode generated</code></p>
-      <p>Outputs land under <code>batch_outputs/triton_matmul_generated</code>.</p>
+      <p>Outputs land under <code>runs/batch_outputs/triton_matmul_generated</code>.</p>
     </div>
 
     <h2>Plots</h2>
     <div class="plots">
-      <div><img src="plots/selection_outcomes.png" alt="Selection outcomes plot"></div>
-      <div><img src="plots/final_gain_vs_lcb.png" alt="Gain vs lower confidence bound plot"></div>
+      <div><img src="../reports/plots/selection_outcomes.png" alt="Selection outcomes plot"></div>
+      <div><img src="../reports/plots/final_gain_vs_lcb.png" alt="Gain vs lower confidence bound plot"></div>
     </div>
-    <p style="margin-top: 18px;"><img src="plots/decision_timeline.png" alt="Decision timeline plot"></p>
+    <p style="margin-top: 18px;"><img src="../reports/plots/decision_timeline.png" alt="Decision timeline plot"></p>
 
     <h2>Source Files</h2>
     <div class="grid">
@@ -142,8 +142,8 @@
       <div class="card">
         <h3>Real kernels included</h3>
         <ul>
-          <li><code>triton_tutorials/03-matrix-multiplication.py</code></li>
-          <li><code>triton_tutorials/02-fused-softmax.py</code></li>
+          <li><code>examples/triton_tutorials/03-matrix-multiplication.py</code></li>
+          <li><code>examples/triton_tutorials/02-fused-softmax.py</code></li>
         </ul>
       </div>
     </div>

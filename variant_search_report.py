@@ -7,8 +7,10 @@ from triton_adapter import default_matmul_variant_specs
 
 
 BASE_DIR = Path(__file__).resolve().parent
-DEFAULT_BATCH_DIR = BASE_DIR / "batch_outputs" / "triton_matmul_generated"
-DEFAULT_OUTPUT = BASE_DIR / "variant_search_report.html"
+DOCS_DIR = BASE_DIR / "docs"
+RUNS_DIR = BASE_DIR / "runs"
+DEFAULT_BATCH_DIR = RUNS_DIR / "batch_outputs" / "triton_matmul_generated"
+DEFAULT_OUTPUT = DOCS_DIR / "variant_search_report.html"
 
 
 def load_batch_summary(batch_dir: Path) -> dict[str, object] | None:
@@ -70,12 +72,12 @@ def render_html(batch_dir: Path, payload: dict[str, object] | None) -> str:
         """
 
         artifact_links = """
-        <li><a href="batch_outputs/triton_matmul_generated/triton_batch_summary.html">batch_outputs/triton_matmul_generated/triton_batch_summary.html</a></li>
-        <li><a href="batch_outputs/triton_matmul_generated/triton_batch_summary.json">batch_outputs/triton_matmul_generated/triton_batch_summary.json</a></li>
-        <li><a href="batch_outputs/triton_matmul_generated/triton_batch_results.csv">batch_outputs/triton_matmul_generated/triton_batch_results.csv</a></li>
-        <li><a href="batch_outputs/triton_matmul_generated/plots/selection_outcomes.png">batch_outputs/triton_matmul_generated/plots/selection_outcomes.png</a></li>
-        <li><a href="batch_outputs/triton_matmul_generated/plots/final_gain_vs_lcb.png">batch_outputs/triton_matmul_generated/plots/final_gain_vs_lcb.png</a></li>
-        <li><a href="batch_outputs/triton_matmul_generated/plots/decision_timeline.png">batch_outputs/triton_matmul_generated/plots/decision_timeline.png</a></li>
+        <li><a href="../runs/batch_outputs/triton_matmul_generated/triton_batch_summary.html">runs/batch_outputs/triton_matmul_generated/triton_batch_summary.html</a></li>
+        <li><a href="../runs/batch_outputs/triton_matmul_generated/triton_batch_summary.json">runs/batch_outputs/triton_matmul_generated/triton_batch_summary.json</a></li>
+        <li><a href="../runs/batch_outputs/triton_matmul_generated/triton_batch_results.csv">runs/batch_outputs/triton_matmul_generated/triton_batch_results.csv</a></li>
+        <li><a href="../runs/batch_outputs/triton_matmul_generated/plots/selection_outcomes.png">runs/batch_outputs/triton_matmul_generated/plots/selection_outcomes.png</a></li>
+        <li><a href="../runs/batch_outputs/triton_matmul_generated/plots/final_gain_vs_lcb.png">runs/batch_outputs/triton_matmul_generated/plots/final_gain_vs_lcb.png</a></li>
+        <li><a href="../runs/batch_outputs/triton_matmul_generated/plots/decision_timeline.png">runs/batch_outputs/triton_matmul_generated/plots/decision_timeline.png</a></li>
         """
 
     variant_rows = []
@@ -187,6 +189,7 @@ def main() -> None:
     payload = load_batch_summary(DEFAULT_BATCH_DIR)
     html = render_html(DEFAULT_BATCH_DIR, payload)
     DEFAULT_OUTPUT.write_text(html, encoding="utf-8")
+    DOCS_DIR.mkdir(parents=True, exist_ok=True)
     print(f"Saved variant search report to {DEFAULT_OUTPUT}")
 
 

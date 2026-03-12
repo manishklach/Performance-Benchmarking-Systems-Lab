@@ -34,7 +34,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--output-dir",
-        default="batch_outputs/triton_matmul_generated",
+        default="runs/batch_outputs/triton_matmul_generated",
         help="Output directory relative to the repo root.",
     )
     return parser.parse_args()

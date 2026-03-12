@@ -29,6 +29,6 @@ python .\variant_search_report.py
 Write-Host ""
 Write-Host "GPU flow complete." -ForegroundColor Green
 Write-Host "Open these files next:"
-Write-Host " - latest_run.html"
-Write-Host " - batch_outputs\triton_matmul_generated\triton_batch_summary.html"
-Write-Host " - variant_search_report.html"
+Write-Host " - runs\\latest_run.html"
+Write-Host " - runs\\batch_outputs\\triton_matmul_generated\\triton_batch_summary.html"
+Write-Host " - docs\\variant_search_report.html"

@@ -100,7 +100,7 @@ def triton_available() -> bool:
 
 
 def _default_tutorial_dir() -> Path:
-    return Path(__file__).resolve().parent / "triton_tutorials"
+    return Path(__file__).resolve().parent / "examples" / "triton_tutorials"
 
 
 def default_matmul_tutorial_path() -> Path:
