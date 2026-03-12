@@ -1,8 +1,10 @@
 # Reliable GPU Kernel Bench
 
-`Reliable GPU Kernel Bench` is a prototype for contamination-aware GPU kernel benchmarking and promotion gating.
+`Reliable GPU Kernel Bench` is a prototype for telemetry-aware GPU kernel benchmarking, finalist-pair rerun allocation, and confidence-gated promotion.
 
-It implements the core control loop:
+It focuses on one control problem: generated or auto-tuned kernels should not be promoted on the basis of noisy wins caused by thermal drift, contention, clock variation, host jitter, or other contaminated benchmark conditions.
+
+Core loop:
 
 - repeated candidate benchmarking
 - telemetry capture
@@ -11,8 +13,41 @@ It implements the core control loop:
 - rerun allocation only to unresolved finalist pairs
 - promote / reject / defer decision
 
-It is intentionally lightweight and runs on CPU by default, but the engine is
-structured so real Triton tutorial kernels can be plugged in on a GPU machine.
+The repo runs on CPU by default for simulation and artifact generation, and is
+also wired for real Triton tutorial kernels on a GPU machine.
+
+## Why this matters
+
+Most autotuners and generated-kernel pipelines still rank candidates by raw timing aggregates. That is risky when measurements are distorted by unstable runtime conditions. This repo shows a tighter selection model: use telemetry to detect contamination, spend extra benchmark budget only on unresolved finalist pairs, and gate promotion on evidence quality instead of apparent speed alone.
+
+## Quick links
+
+- [Demo packet](demo_packet.html)
+- [Key findings](key_findings.html)
+- [Technical spec](tech_spec.html)
+- [Architecture](architecture.html)
+- [Variant search report](variant_search_report.html)
+- [Visual gallery](visual_assets/visual_gallery.html)
+
+## Quick start
+
+CPU demo:
+
+```powershell
+python demo.py
+```
+
+CPU simulation:
+
+```powershell
+python simulate_results.py --runs 20
+```
+
+GPU full flow:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\run_gpu_flow.ps1
+```
 
 ## Files
 
