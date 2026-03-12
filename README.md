@@ -58,6 +58,21 @@ This writes a dedicated batch bundle under:
 - `batch_outputs/triton_matmul_generated/triton_batch_summary.html`
 - `batch_outputs/triton_matmul_generated/plots/*.png`
 
+## Variant search report
+
+Generate the generated-candidate report with:
+
+```powershell
+python variant_search_report.py
+```
+
+This writes:
+
+- `variant_search_report.html`
+
+If GPU batch outputs exist under `batch_outputs/triton_matmul_generated`, the
+report will include their summary automatically.
+
 ## Docs
 
 - `tech_spec.html`
@@ -65,6 +80,7 @@ This writes a dedicated batch bundle under:
 - `key_findings.html`
 - `gpu_run_checklist.html`
 - `demo_packet.html`
+- `variant_search_report.html`
 
 ## GPU preflight
 
