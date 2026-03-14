@@ -11,17 +11,17 @@ This project targets the practical gap between Task Manager and heavyweight vend
 
 ## Screenshots
 
-### Browser dashboard
+### Browser overview
 
-![Browser dashboard](docs/screenshots/browser-dashboard.png)
+![Browser overview](docs/screenshots/browser-overview.png)
 
-### Desktop GUI chart export
+### GPU telemetry panel
 
-![Desktop GUI chart export](docs/screenshots/gui-chart.png)
+![GPU telemetry panel](docs/screenshots/gpu-side-panel.png)
 
-### Terminal dashboard snapshot
+### CPU process panel
 
-![Terminal dashboard snapshot](docs/screenshots/terminal-dashboard.png)
+![CPU process panel](docs/screenshots/cpu-process-panel.png)
 
 ## What V1 includes
 
