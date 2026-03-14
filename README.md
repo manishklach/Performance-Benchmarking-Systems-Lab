@@ -1,5 +1,9 @@
 # AMD APU Toolkit
 
+[![Release](https://img.shields.io/github/v/release/manishklach/amd-apu-toolkit?display_name=tag)](https://github.com/manishklach/amd-apu-toolkit/releases/tag/v1.0.2)
+[![License](https://img.shields.io/github/license/manishklach/amd-apu-toolkit)](https://github.com/manishklach/amd-apu-toolkit/blob/main/LICENSE)
+[![Windows Download](https://img.shields.io/badge/windows-download%20v1.0.2-58a6ff)](https://github.com/manishklach/amd-apu-toolkit/releases/download/v1.0.2/amd-apu-monitor-windows-x64-v1.0.2.zip)
+
 Windows-first telemetry, tracing, and dashboards for AMD APU laptops and desktops.
 
 This project targets the practical gap between Task Manager and heavyweight vendor tooling. It collects live CPU, GPU, memory, and OpenCL signals from a Windows AMD APU system and exposes them through:
@@ -8,6 +12,11 @@ This project targets the practical gap between Task Manager and heavyweight vend
 - a native desktop GUI
 - a browser dashboard
 - CLI probes and CSV exporters
+
+## Download
+
+- [Download Windows package for v1.0.2](https://github.com/manishklach/amd-apu-toolkit/releases/download/v1.0.2/amd-apu-monitor-windows-x64-v1.0.2.zip)
+- [Open the latest release notes](https://github.com/manishklach/amd-apu-toolkit/releases/tag/v1.0.2)
 
 ## Screenshots
 
