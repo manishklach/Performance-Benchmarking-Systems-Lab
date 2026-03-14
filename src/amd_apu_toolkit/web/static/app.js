@@ -287,11 +287,7 @@ function renderGpuTable(targetId, processes) {
   target.innerHTML = "";
   processes.forEach((proc) => {
     const row = document.createElement("tr");
-    const engines = Object.entries(proc.engines || {})
-      .slice(0, 3)
-      .map(([name, value]) => `${name} ${Number(value).toFixed(2)}%`)
-      .join(", ") || "idle";
-    row.innerHTML = `<td>${fmt(proc.total_util_percent)}</td><td>${proc.pid}</td><td>${proc.name}</td><td>${engines}</td>`;
+    row.innerHTML = `<td>${fmt(proc.total_util_percent)}</td><td>${proc.pid}</td><td>${proc.name}</td><td>${fmt(proc.dedicated_mb, " MB")}</td><td>${fmt(proc.shared_mb, " MB")}</td>`;
     target.appendChild(row);
   });
 }
@@ -361,12 +357,14 @@ function updateSnapshot(snapshot) {
   const decodeUtil = sumEngineValues(gpu.engines, (name) => name.includes("decode"));
   const encodeUtil = sumEngineValues(gpu.engines, (name) => name.includes("encode") || name.includes("codec"));
   const videoUtil = sumEngineValues(gpu.engines, (name) => name.includes("video"));
+  const topMemoryProc = [...gpu.processes].sort((a, b) => (Number(b.dedicated_mb || 0) + Number(b.shared_mb || 0)) - (Number(a.dedicated_mb || 0) + Number(a.shared_mb || 0)))[0];
 
   document.getElementById("status").textContent = `Last sample: ${snapshot.timestamp}`;
   document.getElementById("gpuUtil").textContent = fmt(power.gpu_util_percent, "%");
   document.getElementById("topEngine").textContent = `${topEngine.name} ${fmt(topEngine.util_percent, "%")}`;
   document.getElementById("gpuDecode").textContent = fmt(decodeUtil, "%");
   document.getElementById("gpuEncode").textContent = fmt(encodeUtil, "%");
+  document.getElementById("gpuTopMemory").textContent = topMemoryProc ? `${topMemoryProc.name} ${fmt(Number(topMemoryProc.dedicated_mb || 0) + Number(topMemoryProc.shared_mb || 0), " MB")}` : "n/a";
   document.getElementById("gpuProcCount").textContent = String(gpu.processes.length);
   document.getElementById("gpuSharedDetail").textContent = fmt(power.gpu_shared_mb, " MB");
   document.getElementById("gpuDedicatedDetail").textContent = fmt(power.gpu_dedicated_mb, " MB");

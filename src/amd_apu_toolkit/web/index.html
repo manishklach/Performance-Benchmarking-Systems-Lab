@@ -27,7 +27,7 @@
         <article class="card"><h2>GPU Util</h2><p id="gpuUtil">n/a</p></article>
         <article class="card"><h2>Top Engine</h2><p id="topEngine">n/a</p></article>
         <article class="card"><h2>Video Decode</h2><p id="gpuDecode">n/a</p></article>
-        <article class="card"><h2>Video Encode</h2><p id="gpuEncode">n/a</p></article>
+        <article class="card"><h2>Top GPU Memory</h2><p id="gpuTopMemory">n/a</p></article>
       </div>
       <div class="grid-two">
         <article class="panel">
@@ -44,10 +44,11 @@
             <span>Committed</span><span id="gpuCommittedDetail">n/a</span>
             <span>Runtime Delta</span><span id="runtimeDelta">n/a</span>
             <span>GPU Processes</span><span id="gpuProcCount">n/a</span>
+            <span>Video Encode</span><span id="gpuEncode">n/a</span>
           </div>
           <h2>Top GPU Processes</h2>
           <table>
-            <thead><tr><th>GPU %</th><th>PID</th><th>Process</th><th>Engines</th></tr></thead>
+            <thead><tr><th>GPU %</th><th>PID</th><th>Process</th><th>Dedicated</th><th>Shared</th></tr></thead>
             <tbody id="gpuFocusProcesses"></tbody>
           </table>
         </article>
@@ -129,7 +130,7 @@
           <p id="overviewAlerts" class="alert">No alerts.</p>
           <h2>Top GPU Processes</h2>
           <table>
-            <thead><tr><th>GPU %</th><th>PID</th><th>Process</th><th>Engines</th></tr></thead>
+            <thead><tr><th>GPU %</th><th>PID</th><th>Process</th><th>Dedicated</th><th>Shared</th></tr></thead>
             <tbody id="overviewProcesses"></tbody>
           </table>
         </article>

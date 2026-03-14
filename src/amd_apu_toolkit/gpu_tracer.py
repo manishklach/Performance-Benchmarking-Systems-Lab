@@ -11,6 +11,7 @@ from .windows import run_powershell
 
 
 INSTANCE_PATTERN = re.compile(r"pid_(\d+).*?engtype_([^_]+(?: [^_]+)*)", re.IGNORECASE)
+MEMORY_INSTANCE_PATTERN = re.compile(r"pid_(\d+)", re.IGNORECASE)
 SYSTEM_PROCESS_NAMES = {"csrss.exe", "dwm.exe", "System", "svchost.exe", "audiodg.exe"}
 
 
@@ -21,6 +22,10 @@ class GpuProcessSample:
     command_line: str | None
     total_util_percent: float
     engines: dict[str, float]
+    dedicated_mb: float
+    shared_mb: float
+    local_mb: float
+    non_local_mb: float
     is_system: bool
 
 
@@ -45,6 +50,51 @@ def _sample_gpu_counters() -> list[dict[str, str]]:
     return _sample_gpu_counter("Utilization Percentage")
 
 
+def _sample_gpu_process_memory_counter(counter_name: str) -> list[dict[str, str]]:
+    script = (
+        f"Get-Counter '\\GPU Process Memory(*)\\{counter_name}' | "
+        "Select-Object -ExpandProperty CounterSamples | "
+        "Select-Object InstanceName,CookedValue | ConvertTo-Csv -NoTypeInformation"
+    )
+    output = run_powershell(script)
+    return list(csv.DictReader(io.StringIO(output)))
+
+
+def _sample_gpu_process_memory() -> dict[int, dict[str, float]]:
+    counters = {
+        "dedicated_mb": _sample_gpu_process_memory_counter("Dedicated Usage"),
+        "shared_mb": _sample_gpu_process_memory_counter("Shared Usage"),
+        "local_mb": _sample_gpu_process_memory_counter("Local Usage"),
+        "non_local_mb": _sample_gpu_process_memory_counter("Non Local Usage"),
+    }
+    aggregate: dict[int, dict[str, float]] = {}
+
+    for field, rows in counters.items():
+        for row in rows:
+            instance_name = row.get("InstanceName", "")
+            match = MEMORY_INSTANCE_PATTERN.search(instance_name)
+            if not match:
+                continue
+            pid = int(match.group(1))
+            try:
+                value_mb = float(row.get("CookedValue", "0") or 0.0) / 1024**2
+            except ValueError:
+                continue
+            if pid not in aggregate:
+                aggregate[pid] = {
+                    "dedicated_mb": 0.0,
+                    "shared_mb": 0.0,
+                    "local_mb": 0.0,
+                    "non_local_mb": 0.0,
+                }
+            aggregate[pid][field] += value_mb
+
+    return {
+        pid: {key: round(value, 2) for key, value in values.items()}
+        for pid, values in aggregate.items()
+    }
+
+
 def _process_lookup() -> dict[int, dict[str, str | None]]:
     script = (
         "Get-CimInstance Win32_Process | "
@@ -67,6 +117,7 @@ def _process_lookup() -> dict[int, dict[str, str | None]]:
 def trace_gpu_processes(limit: int = 10, include_idle: bool = False) -> list[GpuProcessSample]:
     counters = _sample_gpu_counters()
     processes = _process_lookup()
+    memory_usage = _sample_gpu_process_memory()
     aggregate: dict[int, dict[str, object]] = {}
 
     for row in counters:
@@ -112,6 +163,10 @@ def trace_gpu_processes(limit: int = 10, include_idle: bool = False) -> list[Gpu
                 command_line=data["command_line"] if isinstance(data["command_line"], str) else None,
                 total_util_percent=total,
                 engines=engines,
+                dedicated_mb=memory_usage.get(pid, {}).get("dedicated_mb", 0.0),
+                shared_mb=memory_usage.get(pid, {}).get("shared_mb", 0.0),
+                local_mb=memory_usage.get(pid, {}).get("local_mb", 0.0),
+                non_local_mb=memory_usage.get(pid, {}).get("non_local_mb", 0.0),
                 is_system=str(data["name"]) in SYSTEM_PROCESS_NAMES or pid in {0, 4},
             )
         )
@@ -191,6 +246,11 @@ def _format_process_lines(item: GpuProcessSample) -> list[str]:
     lines = [f"    {item.total_util_percent:7.2f}%  pid={item.pid:<6} name={item.name}"]
     engine_summary = format_engine_summary(item.engines.items()) if item.engines else "no active engines"
     lines.append(f"             engines: {engine_summary}")
+    lines.append(
+        "             memory: "
+        f"dedicated={item.dedicated_mb:.2f} MB, shared={item.shared_mb:.2f} MB, "
+        f"local={item.local_mb:.2f} MB, non-local={item.non_local_mb:.2f} MB"
+    )
     if item.command_line:
         lines.append(f"             cmd: {item.command_line}")
     return lines

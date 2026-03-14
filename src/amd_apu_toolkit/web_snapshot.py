@@ -60,6 +60,10 @@ class SnapshotCollector:
                         "command_line": item.command_line,
                         "total_util_percent": item.total_util_percent,
                         "engines": item.engines,
+                        "dedicated_mb": item.dedicated_mb,
+                        "shared_mb": item.shared_mb,
+                        "local_mb": item.local_mb,
+                        "non_local_mb": item.non_local_mb,
                         "is_system": item.is_system,
                     }
                     for item in processes
