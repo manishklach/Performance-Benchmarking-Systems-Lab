@@ -54,17 +54,41 @@ def list_counter_paths(prefixes: Iterable[str]) -> list[str]:
 def sample_counters(counter_paths: list[str]) -> dict[str, float | None]:
     if not counter_paths:
         return {}
+    result: dict[str, float | None] = {}
+
+    def _parse_output(output: str) -> None:
+        rows = csv.DictReader(io.StringIO(output))
+        for row in rows:
+            try:
+                result[row["Path"]] = float(row["CookedValue"])
+            except (TypeError, ValueError):
+                result[row["Path"]] = None
+
     quoted = ",".join(f"'{path}'" for path in counter_paths)
     script = (
         f"Get-Counter {quoted} | Select-Object -ExpandProperty CounterSamples | "
         "Select-Object Path,CookedValue | ConvertTo-Csv -NoTypeInformation"
     )
-    output = run_powershell(script)
-    rows = csv.DictReader(io.StringIO(output))
-    result: dict[str, float | None] = {}
-    for row in rows:
+    try:
+        output = run_powershell(script)
+        _parse_output(output)
+        return result
+    except subprocess.CalledProcessError:
+        pass
+
+    for path in counter_paths:
+        single_script = (
+            f"Get-Counter '{path}' -ErrorAction SilentlyContinue | Select-Object -ExpandProperty CounterSamples | "
+            "Select-Object Path,CookedValue | ConvertTo-Csv -NoTypeInformation"
+        )
         try:
-            result[row["Path"]] = float(row["CookedValue"])
-        except (TypeError, ValueError):
-            result[row["Path"]] = None
+            output = run_powershell(single_script)
+        except subprocess.CalledProcessError:
+            result[path] = None
+            continue
+        if not output:
+            result[path] = None
+            continue
+        _parse_output(output)
+
     return result

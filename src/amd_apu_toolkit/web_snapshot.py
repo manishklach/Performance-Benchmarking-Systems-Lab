@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import asdict
 from pathlib import Path
 
-from .cpu_tracer import sample_cpu_latency_metrics, sample_cpu_processes
+from .cpu_tracer import compute_risk_score, sample_cpu_latency_metrics, sample_cpu_processes, sample_power_battery_metrics
 from .gpu_tracer import sample_gpu_engine_running_times, sample_gpu_engines, trace_gpu_processes
 from .opencl_probe import probe_opencl
 from .power import build_counter_paths, collect_power_sample
@@ -33,7 +33,9 @@ class SnapshotCollector:
         processes = trace_gpu_processes(limit=12, include_idle=False)
         cpu_processes = sample_cpu_processes(limit=15)
         cpu_latency = sample_cpu_latency_metrics()
+        power_state = sample_power_battery_metrics()
         top_engine = next(iter(engine_sample.engines.items()), ("idle", 0.0))
+        risk = compute_risk_score(cpu_latency, power_sample, uma_snapshot.pressure_score, float(top_engine[1]))
 
         return {
             "timestamp": power_sample["timestamp"],
@@ -42,6 +44,10 @@ class SnapshotCollector:
             "cpu": {
                 "latency": cpu_latency,
                 "processes": [asdict(item) for item in cpu_processes],
+            },
+            "system": {
+                "power": power_state,
+                "risk": risk,
             },
             "gpu": {
                 "top_engine": {"name": top_engine[0], "util_percent": top_engine[1]},

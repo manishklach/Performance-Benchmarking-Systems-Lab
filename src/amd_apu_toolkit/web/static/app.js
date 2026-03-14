@@ -13,11 +13,17 @@ const history = {
   engineCopy: [],
   engineVideo: [],
   cpuQueue: [],
+  cpuRunnable: [],
   cpuContextK: [],
   cpuFaultsK: [],
+  cpuHardFaultsK: [],
   cpuInterrupt: [],
   cpuDpc: [],
   cpuPagesIn: [],
+  diskQueue: [],
+  pagefile: [],
+  commitPct: [],
+  risk: [],
 };
 
 const MAX_POINTS = 40;
@@ -35,6 +41,10 @@ function pushLabel(value, max = MAX_POINTS) {
 function fmt(value, suffix = "") {
   if (value === null || value === undefined || Number.isNaN(value)) return "n/a";
   return `${Number(value).toFixed(2)}${suffix}`;
+}
+
+function textOr(value, fallback = "n/a") {
+  return value === null || value === undefined || value === "" ? fallback : String(value);
 }
 
 function chartDefaults() {
@@ -80,6 +90,12 @@ function buildSingleAxisChart(canvasId, datasets, yTitle, max = null) {
   });
 }
 
+function sumEngineValues(engines, matcher) {
+  return Object.entries(engines || {})
+    .filter(([name]) => matcher(name.toLowerCase()))
+    .reduce((sum, [, value]) => sum + Number(value || 0), 0);
+}
+
 const gpuFocusChart = buildSingleAxisChart(
   "gpuFocusChart",
   [
@@ -97,6 +113,7 @@ const gpuCpuChart = buildSingleAxisChart(
   [
     { label: "CPU", data: [], borderColor: "#58a6ff", borderWidth: 2.6, tension: 0.25 },
     { label: "GPU", data: [], borderColor: "#ff7b72", borderWidth: 2.6, tension: 0.25 },
+    { label: "Risk", data: [], borderColor: "#d29922", borderWidth: 2.0, borderDash: [6, 4], tension: 0.25 },
   ],
   "Percent",
   100,
@@ -108,6 +125,7 @@ const cpuLatencyChart = new Chart(document.getElementById("cpuLatencyChart"), {
     labels: [],
     datasets: [
       { label: "Queue", data: [], borderColor: "#ff7b72", borderWidth: 2.3, tension: 0.25, yAxisID: "yQueue" },
+      { label: "Runnable/Core", data: [], borderColor: "#d29922", borderWidth: 2.0, tension: 0.25, yAxisID: "yQueue" },
       { label: "Interrupt %", data: [], borderColor: "#3fb950", borderWidth: 2.3, tension: 0.25, yAxisID: "yPercent" },
       { label: "DPC %", data: [], borderColor: "#58a6ff", borderWidth: 2.0, borderDash: [6, 4], tension: 0.25, yAxisID: "yPercent" },
     ],
@@ -125,7 +143,7 @@ const cpuLatencyChart = new Chart(document.getElementById("cpuLatencyChart"), {
         beginAtZero: true,
         grace: "15%",
         ticks: { color: "#93a8ba" },
-        title: { display: true, text: "Queue Length", color: "#ebf2f8" },
+        title: { display: true, text: "Queue / Runnable", color: "#ebf2f8" },
         grid: { color: "#263547" },
       },
       yPercent: {
@@ -148,7 +166,8 @@ const cpuActivityChart = new Chart(document.getElementById("cpuActivityChart"), 
     datasets: [
       { label: "Ctx K/s", data: [], borderColor: "#58a6ff", borderWidth: 2.3, tension: 0.25, yAxisID: "yLeft" },
       { label: "Faults K/s", data: [], borderColor: "#d29922", borderWidth: 2.3, tension: 0.25, yAxisID: "yLeft" },
-      { label: "Pages In/s", data: [], borderColor: "#ff7b72", borderWidth: 2.0, borderDash: [6, 4], tension: 0.25, yAxisID: "yRight" },
+      { label: "Hard Faults K/s", data: [], borderColor: "#ff7b72", borderWidth: 2.3, tension: 0.25, yAxisID: "yLeft" },
+      { label: "Pages In/s", data: [], borderColor: "#ff9b85", borderWidth: 2.0, borderDash: [6, 4], tension: 0.25, yAxisID: "yRight" },
     ],
   },
   options: {
@@ -164,7 +183,7 @@ const cpuActivityChart = new Chart(document.getElementById("cpuActivityChart"), 
         beginAtZero: true,
         grace: "15%",
         ticks: { color: "#93a8ba" },
-        title: { display: true, text: "Ctx / Faults (K/s)", color: "#ebf2f8" },
+        title: { display: true, text: "Fault / Ctx (K/s)", color: "#ebf2f8" },
         grid: { color: "#263547" },
       },
       yRight: {
@@ -188,6 +207,7 @@ const ramChart = new Chart(document.getElementById("ramChart"), {
       { label: "Free RAM GB", data: [], borderColor: "#3fb950", borderWidth: 2.6, tension: 0.25, yAxisID: "yRam" },
       { label: "GPU Shared MB", data: [], borderColor: "#d29922", borderWidth: 2.4, tension: 0.25, yAxisID: "yGpu" },
       { label: "GPU Dedicated MB", data: [], borderColor: "#58a6ff", borderWidth: 2.0, borderDash: [6, 4], tension: 0.25, yAxisID: "yGpu" },
+      { label: "Commit %", data: [], borderColor: "#ff7b72", borderWidth: 2.0, borderDash: [3, 3], tension: 0.25, yAxisID: "yCommit" },
     ],
   },
   options: {
@@ -215,6 +235,13 @@ const ramChart = new Chart(document.getElementById("ramChart"), {
         title: { display: true, text: "GPU Memory (MB)", color: "#ebf2f8" },
         grid: { drawOnChartArea: false, color: "#263547" },
       },
+      yCommit: {
+        type: "linear",
+        position: "right",
+        beginAtZero: true,
+        max: 100,
+        display: false,
+      },
     },
   },
 });
@@ -230,24 +257,28 @@ function refreshCharts() {
   gpuCpuChart.data.labels = [...history.labels];
   gpuCpuChart.data.datasets[0].data = [...history.cpu];
   gpuCpuChart.data.datasets[1].data = [...history.gpu];
+  gpuCpuChart.data.datasets[2].data = [...history.risk];
   gpuCpuChart.update("none");
 
   cpuLatencyChart.data.labels = [...history.labels];
   cpuLatencyChart.data.datasets[0].data = [...history.cpuQueue];
-  cpuLatencyChart.data.datasets[1].data = [...history.cpuInterrupt];
-  cpuLatencyChart.data.datasets[2].data = [...history.cpuDpc];
+  cpuLatencyChart.data.datasets[1].data = [...history.cpuRunnable];
+  cpuLatencyChart.data.datasets[2].data = [...history.cpuInterrupt];
+  cpuLatencyChart.data.datasets[3].data = [...history.cpuDpc];
   cpuLatencyChart.update("none");
 
   cpuActivityChart.data.labels = [...history.labels];
   cpuActivityChart.data.datasets[0].data = [...history.cpuContextK];
   cpuActivityChart.data.datasets[1].data = [...history.cpuFaultsK];
-  cpuActivityChart.data.datasets[2].data = [...history.cpuPagesIn];
+  cpuActivityChart.data.datasets[2].data = [...history.cpuHardFaultsK];
+  cpuActivityChart.data.datasets[3].data = [...history.cpuPagesIn];
   cpuActivityChart.update("none");
 
   ramChart.data.labels = [...history.labels];
   ramChart.data.datasets[0].data = [...history.ram];
   ramChart.data.datasets[1].data = [...history.shared];
   ramChart.data.datasets[2].data = [...history.dedicated];
+  ramChart.data.datasets[3].data = [...history.commitPct];
   ramChart.update("none");
 }
 
@@ -275,12 +306,37 @@ function renderCpuTable(processes) {
   });
 }
 
+function formatBattery(powerState) {
+  if (!powerState?.has_battery) return "No battery";
+  return `${fmt(powerState.battery_percent, "%")} ${textOr(powerState.battery_status)}`;
+}
+
+function formatRemainingMinutes(minutes) {
+  if (minutes === null || minutes === undefined || Number(minutes) < 0) return "n/a";
+  const total = Number(minutes);
+  const hours = Math.floor(total / 60);
+  const mins = Math.round(total % 60);
+  if (hours <= 0) return `${mins} min`;
+  return `${hours}h ${mins}m`;
+}
+
 function renderAlerts(snapshot) {
   const alerts = [];
   const topEngine = snapshot.gpu.top_engine;
+  const cpuLatency = snapshot.cpu.latency;
+  const risk = snapshot.system.risk;
+  const powerState = snapshot.system.power;
+
   if (snapshot.uma.pressure_score >= 4) alerts.push("High shared-memory pressure");
   else if (snapshot.uma.pressure_score >= 2) alerts.push("Moderate shared-memory pressure");
   if (topEngine && topEngine.util_percent >= 40) alerts.push(`${topEngine.name} spike ${fmt(topEngine.util_percent, "%")}`);
+  if (cpuLatency.hard_faults_per_sec >= 20) alerts.push(`Hard faults ${fmt(cpuLatency.hard_faults_per_sec, "/s")}`);
+  if (cpuLatency.disk_queue_depth >= 2) alerts.push(`Disk queue ${fmt(cpuLatency.disk_queue_depth)}`);
+  if (powerState?.has_battery && Number(powerState.battery_percent ?? 100) <= 20 && powerState.ac_online === false) {
+    alerts.push("Battery low on DC");
+  }
+  if (risk.score >= 60) alerts.push(`High stutter risk ${risk.score}`);
+
   const runtimeEntries = Object.entries(snapshot.gpu.running_time_deltas_ms || {});
   if (runtimeEntries.length) {
     const [name, value] = runtimeEntries.sort((a, b) => b[1] - a[1])[0];
@@ -289,9 +345,9 @@ function renderAlerts(snapshot) {
   } else {
     document.getElementById("runtimeDelta").textContent = "n/a";
   }
-  const text = alerts.length ? alerts.join(" | ") : "No GPU spikes.";
+  const text = alerts.length ? alerts.join(" | ") : "No active alerts.";
   document.getElementById("gpuAlerts").textContent = text;
-  document.getElementById("overviewAlerts").textContent = text;
+  document.getElementById("overviewAlerts").textContent = `${text}${risk.reasons?.length ? ` | causes: ${risk.reasons.join(", ")}` : ""}`;
 }
 
 function updateSnapshot(snapshot) {
@@ -299,12 +355,18 @@ function updateSnapshot(snapshot) {
   const gpu = snapshot.gpu;
   const cpu = snapshot.cpu;
   const opencl = snapshot.opencl;
+  const powerState = snapshot.system.power;
+  const risk = snapshot.system.risk;
   const topEngine = gpu.top_engine || { name: "idle", util_percent: 0 };
+  const decodeUtil = sumEngineValues(gpu.engines, (name) => name.includes("decode"));
+  const encodeUtil = sumEngineValues(gpu.engines, (name) => name.includes("encode") || name.includes("codec"));
+  const videoUtil = sumEngineValues(gpu.engines, (name) => name.includes("video"));
 
   document.getElementById("status").textContent = `Last sample: ${snapshot.timestamp}`;
   document.getElementById("gpuUtil").textContent = fmt(power.gpu_util_percent, "%");
   document.getElementById("topEngine").textContent = `${topEngine.name} ${fmt(topEngine.util_percent, "%")}`;
-  document.getElementById("gpuShared").textContent = fmt(power.gpu_shared_mb, " MB");
+  document.getElementById("gpuDecode").textContent = fmt(decodeUtil, "%");
+  document.getElementById("gpuEncode").textContent = fmt(encodeUtil, "%");
   document.getElementById("gpuProcCount").textContent = String(gpu.processes.length);
   document.getElementById("gpuSharedDetail").textContent = fmt(power.gpu_shared_mb, " MB");
   document.getElementById("gpuDedicatedDetail").textContent = fmt(power.gpu_dedicated_mb, " MB");
@@ -314,10 +376,31 @@ function updateSnapshot(snapshot) {
   document.getElementById("umaPressure").textContent = String(snapshot.uma.pressure_score);
   document.getElementById("cpuUtil").textContent = fmt(power.cpu_util_percent, "%");
   document.getElementById("freeRam").textContent = fmt(power.free_memory_gb, " GB");
+  document.getElementById("overviewRisk").textContent = `${risk.score} (${risk.level})`;
+  document.getElementById("overviewBattery").textContent = formatBattery(powerState);
+  document.getElementById("overviewPowerPlan").textContent = textOr(powerState.power_plan);
+  document.getElementById("overviewRemaining").textContent = formatRemainingMinutes(powerState.battery_remaining_min);
+  document.getElementById("overviewCommit").textContent = `${fmt(cpu.latency.committed_gb, " GB")} / ${fmt(cpu.latency.commit_limit_gb, " GB")}`;
+  document.getElementById("overviewDiskQueue").textContent = fmt(cpu.latency.disk_queue_depth);
+
   document.getElementById("cpuFocusUtil").textContent = fmt(power.cpu_util_percent, "%");
-  document.getElementById("cpuQueue").textContent = fmt(cpu.latency.processor_queue_length);
-  document.getElementById("cpuCtx").textContent = fmt(cpu.latency.context_switches_per_sec);
-  document.getElementById("cpuFaults").textContent = fmt(cpu.latency.page_faults_per_sec);
+  document.getElementById("cpuRunnable").textContent = fmt(cpu.latency.runnable_threads_per_core);
+  document.getElementById("cpuHardFaults").textContent = fmt(cpu.latency.hard_faults_per_sec);
+  document.getElementById("cpuDiskQueue").textContent = fmt(cpu.latency.disk_queue_depth);
+  document.getElementById("cpuCommitGb").textContent = `${fmt(cpu.latency.committed_gb, " GB")} / ${fmt(cpu.latency.commit_limit_gb, " GB")}`;
+  document.getElementById("cpuCommitPct").textContent = fmt(cpu.latency.commit_in_use_percent, "%");
+  document.getElementById("cpuCompression").textContent = fmt(cpu.latency.memory_compression_mb, " MB");
+  document.getElementById("cpuPagefile").textContent = fmt(cpu.latency.pagefile_usage_percent, "%");
+  document.getElementById("powerBattery").textContent = formatBattery(powerState);
+  document.getElementById("powerPlan").textContent = textOr(powerState.power_plan);
+  document.getElementById("powerRemaining").textContent = formatRemainingMinutes(powerState.battery_remaining_min);
+  document.getElementById("riskScore").textContent = `${risk.score} (${risk.level})`;
+
+  document.getElementById("ramCommitGb").textContent = fmt(cpu.latency.committed_gb, " GB");
+  document.getElementById("ramCommitPct").textContent = fmt(cpu.latency.commit_in_use_percent, "%");
+  document.getElementById("ramCompression").textContent = fmt(cpu.latency.memory_compression_mb, " MB");
+  document.getElementById("ramPagefile").textContent = fmt(cpu.latency.pagefile_usage_percent, "%");
+
   document.getElementById("oclDevice").textContent = opencl.device_name ?? "n/a";
   document.getElementById("oclPlatform").textContent = opencl.platform_version ?? "n/a";
   document.getElementById("oclUnits").textContent = opencl.max_compute_units ?? "n/a";
@@ -331,15 +414,21 @@ function updateSnapshot(snapshot) {
   pushPoint(history.shared, Number(power.gpu_shared_mb ?? 0));
   pushPoint(history.dedicated, Number(power.gpu_dedicated_mb ?? 0));
   pushPoint(history.engine3d, Number(gpu.engines["3d"] ?? 0));
-  pushPoint(history.engineCompute, Number(Object.entries(gpu.engines).filter(([k]) => k.includes("compute")).reduce((sum, [, v]) => sum + Number(v), 0)));
-  pushPoint(history.engineCopy, Number(Object.entries(gpu.engines).filter(([k]) => k.includes("copy")).reduce((sum, [, v]) => sum + Number(v), 0)));
-  pushPoint(history.engineVideo, Number(Object.entries(gpu.engines).filter(([k]) => k.includes("video")).reduce((sum, [, v]) => sum + Number(v), 0)));
+  pushPoint(history.engineCompute, sumEngineValues(gpu.engines, (k) => k.includes("compute")));
+  pushPoint(history.engineCopy, sumEngineValues(gpu.engines, (k) => k.includes("copy")));
+  pushPoint(history.engineVideo, videoUtil);
   pushPoint(history.cpuQueue, Number(cpu.latency.processor_queue_length ?? 0));
+  pushPoint(history.cpuRunnable, Number(cpu.latency.runnable_threads_per_core ?? 0));
   pushPoint(history.cpuContextK, Number(cpu.latency.context_switches_per_sec ?? 0) / 1000);
   pushPoint(history.cpuFaultsK, Number(cpu.latency.page_faults_per_sec ?? 0) / 1000);
+  pushPoint(history.cpuHardFaultsK, Number(cpu.latency.hard_faults_per_sec ?? 0) / 1000);
   pushPoint(history.cpuInterrupt, Number(cpu.latency.interrupt_time_percent ?? 0));
   pushPoint(history.cpuDpc, Number(cpu.latency.dpc_time_percent ?? 0));
   pushPoint(history.cpuPagesIn, Number(cpu.latency.pages_input_per_sec ?? 0));
+  pushPoint(history.diskQueue, Number(cpu.latency.disk_queue_depth ?? 0));
+  pushPoint(history.pagefile, Number(cpu.latency.pagefile_usage_percent ?? 0));
+  pushPoint(history.commitPct, Number(cpu.latency.commit_in_use_percent ?? 0));
+  pushPoint(history.risk, Number(risk.score ?? 0));
 
   refreshCharts();
   renderGpuTable("gpuFocusProcesses", gpu.processes);
