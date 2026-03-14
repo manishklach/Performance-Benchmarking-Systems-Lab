@@ -29,6 +29,10 @@ const history = {
   battery: [],
   remainingMin: [],
   cpuClockMhz: [],
+  cpuPerf: [],
+  gpuCoreMhz: [],
+  gpuTempC: [],
+  gpuPowerW: [],
 };
 
 const MAX_POINTS = 40;
@@ -293,6 +297,47 @@ const powerChart = new Chart(document.getElementById("powerChart"), {
   },
 });
 
+const sensorChart = new Chart(document.getElementById("sensorChart"), {
+  type: "line",
+  data: {
+    labels: [],
+    datasets: [
+      { label: "CPU MHz", data: [], borderColor: "#58a6ff", borderWidth: 2.4, tension: 0.25, yAxisID: "yClock" },
+      { label: "CPU Perf %", data: [], borderColor: "#3fb950", borderWidth: 2.0, tension: 0.25, yAxisID: "yPercent" },
+      { label: "GPU Core MHz", data: [], borderColor: "#d29922", borderWidth: 2.0, borderDash: [6, 4], tension: 0.25, yAxisID: "yClock" },
+      { label: "GPU Temp C", data: [], borderColor: "#ff7b72", borderWidth: 2.0, tension: 0.25, yAxisID: "yPercent" },
+      { label: "GPU Power W", data: [], borderColor: "#c678dd", borderWidth: 2.0, borderDash: [3, 3], tension: 0.25, yAxisID: "yPercent" },
+    ],
+  },
+  options: {
+    ...chartDefaults(),
+    scales: {
+      x: {
+        ticks: { color: "#93a8ba", maxTicksLimit: 6 },
+        grid: { color: "#263547" },
+      },
+      yClock: {
+        type: "linear",
+        position: "left",
+        beginAtZero: true,
+        grace: "10%",
+        ticks: { color: "#93a8ba" },
+        title: { display: true, text: "MHz", color: "#ebf2f8" },
+        grid: { color: "#263547" },
+      },
+      yPercent: {
+        type: "linear",
+        position: "right",
+        beginAtZero: true,
+        grace: "10%",
+        ticks: { color: "#93a8ba" },
+        title: { display: true, text: "Perf / Temp / Power", color: "#ebf2f8" },
+        grid: { drawOnChartArea: false, color: "#263547" },
+      },
+    },
+  },
+});
+
 function refreshCharts() {
   gpuFocusChart.data.labels = [...history.labels];
   gpuFocusChart.data.datasets[0].data = [...history.engine3d];
@@ -336,6 +381,14 @@ function refreshCharts() {
   powerChart.data.datasets[2].data = [...history.risk];
   powerChart.data.datasets[3].data = [...history.cpuClockMhz];
   powerChart.update("none");
+
+  sensorChart.data.labels = [...history.labels];
+  sensorChart.data.datasets[0].data = [...history.cpuClockMhz];
+  sensorChart.data.datasets[1].data = [...history.cpuPerf];
+  sensorChart.data.datasets[2].data = [...history.gpuCoreMhz];
+  sensorChart.data.datasets[3].data = [...history.gpuTempC];
+  sensorChart.data.datasets[4].data = [...history.gpuPowerW];
+  sensorChart.update("none");
 }
 
 function renderGpuTable(targetId, processes) {
@@ -415,8 +468,13 @@ function updateSnapshot(snapshot) {
   const encodeUtil = sumEngineValues(gpu.engines, (name) => name.includes("encode") || name.includes("codec"));
   const videoProcUtil = sumEngineValues(gpu.engines, (name) => name.includes("video") && !name.includes("decode") && !name.includes("encode") && !name.includes("codec"));
   const topMemoryProc = [...gpu.processes].sort((a, b) => (Number(b.dedicated_mb || 0) + Number(b.shared_mb || 0)) - (Number(a.dedicated_mb || 0) + Number(a.shared_mb || 0)))[0];
+  const provider = textOr(sensors.provider, "n/a");
+  const providerBadge = document.getElementById("providerBadge");
 
   document.getElementById("status").textContent = `Last sample: ${snapshot.timestamp}`;
+  providerBadge.textContent = `Sensor provider: ${provider}`;
+  providerBadge.classList.toggle("is-live", provider !== "windows-only" && provider !== "n/a");
+  providerBadge.classList.toggle("is-limited", provider === "windows-only" || provider === "n/a");
   document.getElementById("gpuUtil").textContent = fmt(power.gpu_util_percent, "%");
   document.getElementById("topEngine").textContent = `${topEngine.name} ${fmt(topEngine.util_percent, "%")}`;
   document.getElementById("gpuDecode").textContent = fmt(decodeUtil, "%");
@@ -443,6 +501,12 @@ function updateSnapshot(snapshot) {
   document.getElementById("overviewCommit").textContent = `${fmt(cpu.latency.committed_gb, " GB")} / ${fmt(cpu.latency.commit_limit_gb, " GB")}`;
   document.getElementById("overviewDiskQueue").textContent = fmt(cpu.latency.disk_queue_depth);
   document.getElementById("sensorProvider").textContent = textOr(sensors.provider);
+  document.getElementById("sensorProviderCard").textContent = provider;
+  document.getElementById("sensorCpuClockCard").textContent = fmt(sensors.cpu_actual_mhz, " MHz");
+  document.getElementById("sensorCpuPerfCard").textContent = fmt(sensors.cpu_perf_percent, "%");
+  document.getElementById("sensorGpuCoreCard").textContent = fmt(sensors.gpu_core_mhz, " MHz");
+  document.getElementById("sensorGpuTempCard").textContent = fmt(sensors.gpu_temp_c, " C");
+  document.getElementById("sensorThrottleCard").textContent = textOr(sensors.throttle_hint);
   document.getElementById("sensorCpuPerf").textContent = `${fmt(sensors.cpu_perf_percent, "%")} @ ${fmt(sensors.cpu_max_percent, "% max")}`;
   document.getElementById("sensorCpuLimit").textContent = `${fmt(sensors.cpu_perf_limit_percent, "%")} ${textOr(sensors.cpu_limit_reason)}`;
   document.getElementById("sensorGpuCore").textContent = fmt(sensors.gpu_core_mhz, " MHz");
@@ -450,6 +514,10 @@ function updateSnapshot(snapshot) {
   document.getElementById("sensorGpuTemp").textContent = fmt(sensors.gpu_temp_c, " C");
   document.getElementById("sensorGpuPower").textContent = fmt(sensors.gpu_power_w, " W");
   document.getElementById("sensorThrottle").textContent = textOr(sensors.throttle_hint);
+  document.getElementById("sensorHint").textContent =
+    provider === "windows-only" || provider === "n/a"
+      ? "Install LibreHardwareMonitor or OpenHardwareMonitor and enable WMI for GPU sensors."
+      : `Using ${provider} for extended GPU sensors.`;
 
   document.getElementById("cpuFocusUtil").textContent = fmt(power.cpu_util_percent, "%");
   document.getElementById("cpuRunnable").textContent = fmt(cpu.latency.runnable_threads_per_core);
@@ -503,6 +571,10 @@ function updateSnapshot(snapshot) {
   pushPoint(history.battery, Number(powerState.battery_percent ?? 0));
   pushPoint(history.remainingMin, Number(powerState.battery_remaining_min ?? 0));
   pushPoint(history.cpuClockMhz, Number(sensors.cpu_actual_mhz ?? 0));
+  pushPoint(history.cpuPerf, Number(sensors.cpu_perf_percent ?? 0));
+  pushPoint(history.gpuCoreMhz, Number(sensors.gpu_core_mhz ?? 0));
+  pushPoint(history.gpuTempC, Number(sensors.gpu_temp_c ?? 0));
+  pushPoint(history.gpuPowerW, Number(sensors.gpu_power_w ?? 0));
 
   refreshCharts();
   renderGpuTable("gpuFocusProcesses", gpu.processes);

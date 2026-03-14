@@ -11,12 +11,14 @@
     <div>
       <h1>AMD APU Browser Dashboard</h1>
       <p id="status">Connecting</p>
+      <p id="providerBadge" class="provider-badge">Sensor provider: windows-only</p>
     </div>
     <div class="actions">
       <button class="nav is-active" data-view="gpu-focus">GPU Focus</button>
       <button class="nav" data-view="cpu-focus">CPU Focus</button>
       <button class="nav" data-view="gpu-cpu">GPU / CPU</button>
       <button class="nav" data-view="ram">RAM</button>
+      <button class="nav" data-view="sensors">Sensors</button>
       <button class="nav" data-view="overview">Overview</button>
     </div>
   </header>
@@ -120,6 +122,40 @@
       </article>
     </section>
 
+    <section id="sensors" class="view">
+      <div class="cards six">
+        <article class="card"><h2>Provider</h2><p id="sensorProviderCard">n/a</p></article>
+        <article class="card"><h2>CPU MHz</h2><p id="sensorCpuClockCard">n/a</p></article>
+        <article class="card"><h2>CPU Perf</h2><p id="sensorCpuPerfCard">n/a</p></article>
+        <article class="card"><h2>GPU Core</h2><p id="sensorGpuCoreCard">n/a</p></article>
+        <article class="card"><h2>GPU Temp</h2><p id="sensorGpuTempCard">n/a</p></article>
+        <article class="card"><h2>Throttle</h2><p id="sensorThrottleCard">n/a</p></article>
+      </div>
+      <div class="grid-two">
+        <article class="panel">
+          <h2>Sensor History</h2>
+          <div class="sensor-chart-wrap">
+            <canvas id="sensorChart"></canvas>
+          </div>
+        </article>
+        <article class="panel">
+          <h2>Sensor Snapshot</h2>
+          <div class="kv">
+            <span>Provider</span><span id="sensorProvider">n/a</span>
+            <span>CPU Perf</span><span id="sensorCpuPerf">n/a</span>
+            <span>CPU Limit</span><span id="sensorCpuLimit">n/a</span>
+            <span>GPU Core</span><span id="sensorGpuCore">n/a</span>
+            <span>GPU Memory</span><span id="sensorGpuMem">n/a</span>
+            <span>GPU Temp</span><span id="sensorGpuTemp">n/a</span>
+            <span>GPU Power</span><span id="sensorGpuPower">n/a</span>
+            <span>Throttle Hint</span><span id="sensorThrottle">n/a</span>
+          </div>
+          <h2>Setup Hint</h2>
+          <p id="sensorHint" class="alert">Install LibreHardwareMonitor or OpenHardwareMonitor and enable WMI for GPU sensors.</p>
+        </article>
+      </div>
+    </section>
+
     <section id="overview" class="view">
       <div class="cards six">
         <article class="card"><h2>Risk Score</h2><p id="overviewRisk">n/a</p></article>
@@ -148,17 +184,6 @@
             <span>Remaining</span><span id="overviewRemaining">n/a</span>
             <span>Commit</span><span id="overviewCommit">n/a</span>
             <span>Disk Queue</span><span id="overviewDiskQueue">n/a</span>
-          </div>
-          <h2>Sensor Snapshot</h2>
-          <div class="kv">
-            <span>Provider</span><span id="sensorProvider">n/a</span>
-            <span>CPU Perf</span><span id="sensorCpuPerf">n/a</span>
-            <span>CPU Limit</span><span id="sensorCpuLimit">n/a</span>
-            <span>GPU Core</span><span id="sensorGpuCore">n/a</span>
-            <span>GPU Memory</span><span id="sensorGpuMem">n/a</span>
-            <span>GPU Temp</span><span id="sensorGpuTemp">n/a</span>
-            <span>GPU Power</span><span id="sensorGpuPower">n/a</span>
-            <span>Throttle Hint</span><span id="sensorThrottle">n/a</span>
           </div>
           <h2>Risk Drivers</h2>
           <p id="riskReasons" class="alert">No active risk drivers.</p>

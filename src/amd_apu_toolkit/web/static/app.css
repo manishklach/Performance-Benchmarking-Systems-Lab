@@ -47,6 +47,28 @@ body {
 h1, h2, h3, p { margin: 0; }
 h1 { font-size: 1.5rem; }
 #status { color: var(--muted); margin-top: 0.25rem; }
+.provider-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  background: rgba(18, 29, 42, 0.72);
+}
+
+.provider-badge.is-live {
+  color: #9fd4ff;
+  border-color: rgba(88, 166, 255, 0.5);
+}
+
+.provider-badge.is-limited {
+  color: #ffd38a;
+  border-color: rgba(210, 153, 34, 0.5);
+}
 
 .actions {
   display: flex;
@@ -169,6 +191,11 @@ canvas {
 
 .power-chart-wrap {
   height: 220px;
+  margin-top: 0.75rem;
+}
+
+.sensor-chart-wrap {
+  height: 320px;
   margin-top: 0.75rem;
 }
 
