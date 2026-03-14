@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AMD APU Browser Dashboard</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>AMD APU Browser Dashboard</h1>
+      <p id="status">Connecting</p>
+    </div>
+    <div class="actions">
+      <button class="nav is-active" data-view="gpu-focus">GPU Focus</button>
+      <button class="nav" data-view="cpu-focus">CPU Focus</button>
+      <button class="nav" data-view="gpu-cpu">GPU / CPU</button>
+      <button class="nav" data-view="ram">RAM</button>
+      <button class="nav" data-view="overview">Overview</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="gpu-focus" class="view is-active">
+      <div class="cards four">
+        <article class="card"><h2>GPU Util</h2><p id="gpuUtil">n/a</p></article>
+        <article class="card"><h2>Top Engine</h2><p id="topEngine">n/a</p></article>
+        <article class="card"><h2>GPU Shared</h2><p id="gpuShared">n/a</p></article>
+        <article class="card"><h2>GPU Processes</h2><p id="gpuProcCount">n/a</p></article>
+      </div>
+      <div class="grid-two">
+        <article class="panel">
+          <h2>GPU Engine Activity</h2>
+          <canvas id="gpuFocusChart"></canvas>
+        </article>
+        <article class="panel">
+          <h2>GPU Alerts</h2>
+          <p id="gpuAlerts" class="alert">No GPU spikes.</p>
+          <h2>GPU Memory</h2>
+          <div class="kv">
+            <span>Shared</span><span id="gpuSharedDetail">n/a</span>
+            <span>Dedicated</span><span id="gpuDedicatedDetail">n/a</span>
+            <span>Committed</span><span id="gpuCommittedDetail">n/a</span>
+            <span>Runtime Delta</span><span id="runtimeDelta">n/a</span>
+          </div>
+          <h2>Top GPU Processes</h2>
+          <table>
+            <thead><tr><th>GPU %</th><th>PID</th><th>Process</th><th>Engines</th></tr></thead>
+            <tbody id="gpuFocusProcesses"></tbody>
+          </table>
+        </article>
+      </div>
+    </section>
+
+    <section id="gpu-cpu" class="view">
+      <article class="panel full">
+        <h2>GPU / CPU Utilization</h2>
+        <canvas id="gpuCpuChart"></canvas>
+      </article>
+    </section>
+
+    <section id="cpu-focus" class="view">
+      <div class="cards four">
+        <article class="card"><h2>CPU Util</h2><p id="cpuFocusUtil">n/a</p></article>
+        <article class="card"><h2>Queue Length</h2><p id="cpuQueue">n/a</p></article>
+        <article class="card"><h2>Ctx Switches/s</h2><p id="cpuCtx">n/a</p></article>
+        <article class="card"><h2>Page Faults/s</h2><p id="cpuFaults">n/a</p></article>
+      </div>
+      <div class="grid-two">
+        <article class="panel">
+          <h2>CPU Latency Signals</h2>
+          <div class="stacked-chart">
+            <div class="subchart">
+              <h3>Queue and Interrupts</h3>
+              <canvas id="cpuLatencyChart"></canvas>
+            </div>
+            <div class="subchart">
+              <h3>Context Switches and Faults</h3>
+              <canvas id="cpuActivityChart"></canvas>
+            </div>
+          </div>
+        </article>
+        <article class="panel">
+          <h2>Top CPU Processes</h2>
+          <table>
+            <thead><tr><th>CPU %</th><th>PID</th><th>Process</th><th>Threads</th><th>Private MB</th></tr></thead>
+            <tbody id="cpuProcesses"></tbody>
+          </table>
+        </article>
+      </div>
+    </section>
+
+    <section id="ram" class="view">
+      <article class="panel full">
+        <h2>RAM and GPU Memory</h2>
+        <canvas id="ramChart"></canvas>
+      </article>
+    </section>
+
+    <section id="overview" class="view">
+      <div class="cards four">
+        <article class="card"><h2>UMA Verdict</h2><p id="umaVerdict">n/a</p></article>
+        <article class="card"><h2>Pressure</h2><p id="umaPressure">n/a</p></article>
+        <article class="card"><h2>CPU Util</h2><p id="cpuUtil">n/a</p></article>
+        <article class="card"><h2>Free RAM</h2><p id="freeRam">n/a</p></article>
+      </div>
+      <div class="grid-two">
+        <article class="panel">
+          <h2>Alerts</h2>
+          <p id="overviewAlerts" class="alert">No alerts.</p>
+          <h2>Top GPU Processes</h2>
+          <table>
+            <thead><tr><th>GPU %</th><th>PID</th><th>Process</th><th>Engines</th></tr></thead>
+            <tbody id="overviewProcesses"></tbody>
+          </table>
+        </article>
+        <article class="panel">
+          <h2>OpenCL Runtime</h2>
+          <div class="kv">
+            <span>Device</span><span id="oclDevice">n/a</span>
+            <span>Platform</span><span id="oclPlatform">n/a</span>
+            <span>Compute Units</span><span id="oclUnits">n/a</span>
+            <span>Unified Memory</span><span id="oclUnified">n/a</span>
+            <span>clinfo Avg</span><span id="oclClinfo">n/a</span>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
