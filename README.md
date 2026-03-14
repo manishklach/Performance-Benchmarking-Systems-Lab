@@ -40,7 +40,9 @@ This project targets the practical gap between Task Manager and heavyweight vend
 - `snapshot-dashboard`: exports a terminal dashboard PNG
 - `gui`: desktop dashboard with live charts and export support
 - `trace-gpu`: top GPU-consuming processes, sorted by descending utilization
-- `serve-web`: local realtime browser dashboard with GPU Focus, CPU Focus, RAM, GPU/CPU, and Overview views
+- `serve-web`: local realtime browser dashboard with GPU Focus, CPU Focus, RAM, GPU/CPU, Sensors, and Overview views
+- `capture-trace`: WPR-based ETW trace capture for CPU/GPU/Video analysis
+- `trace-preflight`: checks whether trace capture is actually runnable on the current Windows session
 
 ## Why this exists
 
@@ -74,12 +76,12 @@ flowchart LR
 
 Latest release:
 
-- [v1.0.1 release](https://github.com/manishklach/amd-apu-toolkit/releases/tag/v1.0.1)
+- [v1.0.2 release](https://github.com/manishklach/amd-apu-toolkit/releases/tag/v1.0.2)
 
 Current state:
 
 - the release includes screenshots, release notes, and a downloadable Windows GUI package
-- the packaged binary is published as `amd-apu-monitor-windows-x64-v1.0.1.zip`
+- the packaged binary is published as `amd-apu-monitor-windows-x64-v1.0.2.zip`
 - the repo still supports building the Windows EXE locally
 
 If you want to run it today, download the Windows package from Releases, install from source, or build the EXE locally:
@@ -109,6 +111,8 @@ amd-apu-toolkit snapshot-dashboard --output output/dashboard_snapshot.png
 amd-apu-toolkit gui --refresh 2
 amd-apu-toolkit trace-gpu --limit 12
 amd-apu-toolkit trace-gpu --watch --interval 1 --limit 12
+amd-apu-toolkit trace-preflight
+amd-apu-toolkit capture-trace --duration 15 --profiles CPU GPU Video
 amd-apu-toolkit serve-web --host 127.0.0.1 --port 8765 --refresh 2
 ```
 
@@ -122,7 +126,8 @@ The browser dashboard is the main V1 experience. It includes:
 - `CPU Focus`: queue length, context switches, page faults, interrupt and DPC activity, top CPU processes
 - `GPU / CPU`: fixed-scale utilization trend view
 - `RAM`: system RAM and GPU memory with separate axes
-- `Overview`: UMA verdict, alerts, OpenCL runtime information, and top GPU activity
+- `Sensors`: CPU frequency, perf-limit metrics, optional GPU clocks, temperature, and power
+- `Overview`: UMA verdict, alerts, risk drivers, OpenCL runtime information, top GPU activity, and ETW trace capture controls
 
 The browser UI uses Chart.js and a local FastAPI + WebSocket backend. No cloud service is involved.
 
@@ -158,6 +163,102 @@ How to enable it:
 When the provider is active, the `Overview` page will switch the `Sensor Snapshot` provider from `windows-only` to the detected provider name and start filling GPU sensor fields.
 
 If no provider is installed, the dashboard still works. GPU sensor fields will remain `n/a`.
+
+## ETW trace capture
+
+The toolkit now includes a Windows Performance Recorder capture path for short CPU/GPU/Video traces.
+
+What it adds:
+
+- browser controls on `Overview`
+- CLI capture for unattended runs
+- preflight checks so the app can tell you whether tracing is actually allowed
+- trace metadata written next to the `.etl`
+- optional `tracerpt` summary generation after a successful stop
+
+### CLI examples
+
+Check whether the current session can capture traces:
+
+```powershell
+amd-apu-toolkit trace-preflight
+```
+
+Capture a 15 second CPU/GPU/Video trace:
+
+```powershell
+amd-apu-toolkit capture-trace --duration 15 --profiles CPU GPU Video
+```
+
+Capture a longer trace with extra disk and power context:
+
+```powershell
+amd-apu-toolkit capture-trace --duration 30 --profiles CPU GPU Video DiskIO Power
+```
+
+### Browser workflow
+
+1. Start the browser dashboard:
+
+```powershell
+amd-apu-toolkit serve-web --host 127.0.0.1 --port 8765 --refresh 2
+```
+
+2. Open [http://127.0.0.1:8765](http://127.0.0.1:8765)
+3. Go to `Overview`
+4. Check `Preflight`
+5. If it says `ready`, click `Start 15s Trace`
+6. After completion, inspect:
+   - `Last Trace`
+   - `Summary`
+   - the metadata `.json`
+
+Trace outputs are written under:
+
+- `output/traces`
+
+Typical files:
+
+- `wpr_trace_YYYYMMDD_HHMMSS.etl`
+- `wpr_trace_YYYYMMDD_HHMMSS.json`
+- `wpr_trace_YYYYMMDD_HHMMSS_summary.txt`
+
+### Important requirement
+
+On many Windows machines, WPR capture needs an elevated shell.
+
+If trace preflight reports `not ready` or capture fails with `0xc5585011`, run the toolkit from an elevated PowerShell:
+
+1. open `Windows PowerShell` as Administrator
+2. `cd` into the repo
+3. start the dashboard or CLI again
+
+Example:
+
+```powershell
+cd C:\Users\ManishKL\Documents\Playground\amd-apu-toolkit
+python -m amd_apu_toolkit.cli serve-web --host 127.0.0.1 --port 8765 --refresh 2
+```
+
+Then verify:
+
+```powershell
+python -m amd_apu_toolkit.cli trace-preflight
+```
+
+You want:
+
+- `preflight.ready: True`
+
+### What trace capture is for
+
+Use ETW capture when the live dashboard tells you there is a real issue, but you need deeper timing evidence:
+
+- frame pacing investigation
+- CPU hotspot escalation
+- GPU/video glitch investigation
+- compositor or browser pipeline analysis
+- short reproductions of stutter or latency spikes
 
 ## Demo scenarios
 
@@ -202,6 +303,9 @@ This toolkit is not a replacement for ETW-grade analysis. It is the faster first
 | GPU process ranking | Yes | No | Yes | Yes |
 | CPU process ranking | No | No | No | Yes |
 | OpenCL runtime details | Yes | Yes | Yes | Yes |
+| Sensor provider status | No | No | No | Yes |
+| ETW trace preflight | Yes | No | No | Yes |
+| ETW trace start/stop | Yes | No | No | Yes |
 | CSV export | Yes | Yes | Yes | No |
 | PNG export | Yes | Yes | Yes | No |
 | Realtime browser view | No | No | No | Yes |
@@ -253,6 +357,30 @@ amd-apu-toolkit trace-gpu --limit 10
 amd-apu-toolkit trace-gpu --watch --interval 1 --limit 10
 ```
 
+### `trace-preflight`
+
+Reports whether the current Windows session is ready for WPR capture.
+
+```powershell
+amd-apu-toolkit trace-preflight
+```
+
+Example output on a non-elevated shell:
+
+```text
+preflight: {'ready': False, 'is_admin': False, 'wpr_available': True, 'tracerpt_available': True, 'reason': 'WPR capture likely requires an elevated shell on this machine'}
+```
+
+### `capture-trace`
+
+Captures a short ETW trace using WPR profiles such as `CPU`, `GPU`, `Video`, `DiskIO`, and `Power`.
+
+```powershell
+amd-apu-toolkit capture-trace --duration 15 --profiles CPU GPU Video
+```
+
+On success, the toolkit writes the trace and metadata under `output/traces`.
+
 ## Build a Windows EXE
 
 ```powershell
@@ -292,6 +420,28 @@ It does not require ROCm.
 - some Windows counter sets vary across driver versions and hardware generations
 - AMD clocks, power draw, thermals, and fan speeds are not exposed yet through a vendor-specific API
 - browser charts depend on a locally running Python backend
+- ETW capture depends on Windows policy and usually requires an elevated shell
+- real frame-time analysis is not parsed yet from ETL; current capture is the acquisition layer
+
+## Troubleshooting
+
+### Trace capture says `not ready`
+
+Run:
+
+```powershell
+amd-apu-toolkit trace-preflight
+```
+
+If `is_admin` is `False`, reopen PowerShell as Administrator and try again.
+
+### Trace capture fails with `0xc5585011`
+
+That means WPR start was blocked by current tracing policy or privileges. The fastest fix is to run the dashboard or CLI from an elevated shell.
+
+### GPU clocks and temperature are `n/a`
+
+That is expected until `LibreHardwareMonitor` or `OpenHardwareMonitor` is running locally with WMI enabled.
 
 ## Roadmap
 
