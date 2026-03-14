@@ -45,6 +45,21 @@ Integrated AMD systems behave differently from discrete GPU workstations:
 
 This toolkit consolidates those signals into one place and keeps the collection path simple enough to run on a normal Windows machine.
 
+## Architecture
+
+```mermaid
+flowchart LR
+    A["Windows performance counters"] --> B["Python collectors"]
+    C["Process metadata"] --> B
+    D["OpenCL probe"] --> B
+    B --> E["CLI probes"]
+    B --> F["Terminal dashboard"]
+    B --> G["Desktop GUI"]
+    B --> H["FastAPI + WebSocket server"]
+    H --> I["Browser dashboard"]
+    B --> J["CSV and PNG exports"]
+```
+
 ## Install
 
 Requirements:
@@ -88,6 +103,20 @@ The browser dashboard is the main V1 experience. It includes:
 - `Overview`: UMA verdict, alerts, OpenCL runtime information, and top GPU activity
 
 The browser UI uses Chart.js and a local FastAPI + WebSocket backend. No cloud service is involved.
+
+## Feature matrix
+
+| Capability | CLI | Terminal dashboard | Desktop GUI | Browser dashboard |
+| --- | --- | --- | --- | --- |
+| UMA pressure verdict | Yes | Yes | Yes | Yes |
+| CPU utilization | Yes | Yes | Yes | Yes |
+| GPU utilization | Yes | Yes | Yes | Yes |
+| GPU process ranking | Yes | No | Yes | Yes |
+| CPU process ranking | No | No | No | Yes |
+| OpenCL runtime details | Yes | Yes | Yes | Yes |
+| CSV export | Yes | Yes | Yes | No |
+| PNG export | Yes | Yes | Yes | No |
+| Realtime browser view | No | No | No | Yes |
 
 ## Desktop GUI
 
@@ -143,6 +172,20 @@ powershell -ExecutionPolicy Bypass -File .\scripts\build_windows_exe.ps1
 ```
 
 The generated executable is written under `dist\amd-apu-monitor`.
+
+## Known-good test hardware
+
+This V1 build was exercised on the following local machine:
+
+- CPU: `AMD Ryzen 3 5300U with Radeon Graphics`
+- Cores / threads: `4 / 8`
+- GPU: `AMD Radeon(TM) Graphics`
+- GPU driver: `31.0.21914.8004`
+- RAM: about `15.3 GB visible to Windows`
+- OS: `Microsoft Windows 11 Home Single Language`
+- Build: `26200`
+
+This matters because Windows GPU counters vary by hardware generation and driver branch. If your system exposes a different counter set, the toolkit will collect a narrower metric set.
 
 ## Data sources
 
