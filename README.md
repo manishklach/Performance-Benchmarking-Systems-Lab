@@ -11,17 +11,21 @@ This project targets the practical gap between Task Manager and heavyweight vend
 
 ## Screenshots
 
-### Browser overview
+### GPU Focus
 
-![Browser overview](docs/screenshots/browser-overview.png)
+![GPU Focus](docs/screenshots/gpu-focus-full.png)
 
-### GPU telemetry panel
+### CPU Focus
 
-![GPU telemetry panel](docs/screenshots/gpu-side-panel.png)
+![CPU Focus](docs/screenshots/cpu-focus-full.png)
 
-### CPU process panel
+### RAM
 
-![CPU process panel](docs/screenshots/cpu-process-panel.png)
+![RAM](docs/screenshots/ram-full.png)
+
+### Overview
+
+![Overview](docs/screenshots/overview-full.png)
 
 ## What V1 includes
 
@@ -61,6 +65,20 @@ flowchart LR
 ```
 
 ## Install
+
+## Releases and distribution
+
+Source release:
+
+- [v1.0.0 release](https://github.com/manishklach/amd-apu-toolkit/releases/tag/v1.0.0)
+
+Current state:
+
+- the release exists and includes screenshots plus release notes
+- the repo already supports building a Windows EXE locally
+- downloadable packaged binaries are the next distribution step, not fully productized yet
+
+If you want to run it today, install from source or build the EXE locally:
 
 Requirements:
 
@@ -103,6 +121,39 @@ The browser dashboard is the main V1 experience. It includes:
 - `Overview`: UMA verdict, alerts, OpenCL runtime information, and top GPU activity
 
 The browser UI uses Chart.js and a local FastAPI + WebSocket backend. No cloud service is involved.
+
+## Demo scenarios
+
+The toolkit is easiest to understand when run against repeatable scenarios instead of idle desktop usage. Good canned demos:
+
+- browser or video playback: watch compositor activity, GPU process ranking, and shared memory movement
+- game or emulator load: compare `GPU Focus` and `GPU / CPU` to see whether stutter aligns more with CPU or GPU pressure
+- local LLM or OpenCL stress: use `probe-opencl`, `trace-gpu`, and the browser dashboard to see compute vs copy behavior
+- memory-pressure or stutter scenario: open heavy apps or browser tabs and watch `UMA`, free RAM, queue length, and page faults together
+
+For a short product demo, the strongest sequence is:
+
+1. start `serve-web`
+2. show `GPU Focus` during video playback or a game menu
+3. switch to `CPU Focus` under system load
+4. switch to `RAM` to show shared-memory effects
+5. finish on `Overview` for the verdict and OpenCL runtime summary
+
+## Why choose this over X?
+
+| Tool | Good at | Weak at | Where AMD APU Toolkit fits |
+| --- | --- | --- | --- |
+| Task Manager | quick process and utilization checks | weak correlation across UMA, GPU engines, CPU latency, and OpenCL | use this when you need one coherent APU-centric view |
+| HWiNFO | broad hardware sensor coverage | less focused on process attribution and browser-ready dashboards | complementary if you care about sensors and this project handles workload correlation |
+| Vendor overlays | lightweight in-game summaries | usually narrow, transient, and not great for root-cause analysis | use this when you want history, process ranking, and memory-pressure context |
+| ETW / WPA / xperf-class tools | deep trace analysis and hotspots | high setup cost, heavy workflow, less approachable for live monitoring | use this for fast interactive triage before deciding whether full tracing is necessary |
+
+This toolkit is not a replacement for ETW-grade analysis. It is the faster first-pass tool for answering:
+
+- is the bottleneck CPU, GPU, memory pressure, or scheduling noise?
+- which processes are actually touching the GPU?
+- is the APU under shared-memory stress?
+- should I escalate to heavier tracing tools?
 
 ## Feature matrix
 
