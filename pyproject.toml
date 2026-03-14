@@ -4,12 +4,18 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "amd-apu-toolkit"
-version = "1.0.0"
+version = "1.0.1"
 description = "Windows-first telemetry, tracing, and dashboards for AMD APU systems."
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [{ name = "OpenAI Codex" }]
-dependencies = ["fastapi>=0.116.0", "rich>=13.7.0", "uvicorn>=0.35.0"]
+dependencies = [
+    "fastapi>=0.116.0",
+    "matplotlib>=3.9.0",
+    "pillow>=10.4.0",
+    "rich>=13.7.0",
+    "uvicorn>=0.35.0",
+]
 
 [project.scripts]
 amd-apu-toolkit = "amd_apu_toolkit.cli:main"

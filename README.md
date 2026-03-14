@@ -68,17 +68,17 @@ flowchart LR
 
 ## Releases and distribution
 
-Source release:
+Latest release:
 
-- [v1.0.0 release](https://github.com/manishklach/amd-apu-toolkit/releases/tag/v1.0.0)
+- [v1.0.1 release](https://github.com/manishklach/amd-apu-toolkit/releases/tag/v1.0.1)
 
 Current state:
 
-- the release exists and includes screenshots plus release notes
-- the repo already supports building a Windows EXE locally
-- downloadable packaged binaries are the next distribution step, not fully productized yet
+- the release includes screenshots, release notes, and a downloadable Windows GUI package
+- the packaged binary is published as `amd-apu-monitor-windows-x64-v1.0.1.zip`
+- the repo still supports building the Windows EXE locally
 
-If you want to run it today, install from source or build the EXE locally:
+If you want to run it today, download the Windows package from Releases, install from source, or build the EXE locally:
 
 Requirements:
 
