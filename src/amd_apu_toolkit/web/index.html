@@ -187,6 +187,18 @@
           </div>
           <h2>Risk Drivers</h2>
           <p id="riskReasons" class="alert">No active risk drivers.</p>
+          <h2>Trace Capture</h2>
+          <div class="trace-actions">
+            <button id="traceStartBtn" class="trace-btn">Start 15s Trace</button>
+            <button id="traceStopBtn" class="trace-btn trace-btn-secondary">Stop Trace</button>
+          </div>
+          <div class="kv">
+            <span>Status</span><span id="traceState">n/a</span>
+            <span>Profiles</span><span id="traceProfiles">n/a</span>
+            <span>Target</span><span id="traceOutput">n/a</span>
+            <span>Last Trace</span><span id="traceLastPath">n/a</span>
+          </div>
+          <p id="traceHint" class="alert">Capture CPU/GPU/Video ETW traces for WPA analysis.</p>
           <h2>Power History</h2>
           <div class="power-chart-wrap">
             <canvas id="powerChart"></canvas>

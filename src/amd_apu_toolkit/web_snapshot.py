@@ -8,14 +8,16 @@ from .gpu_tracer import sample_gpu_engine_running_times, sample_gpu_engines, tra
 from .opencl_probe import probe_opencl
 from .power import build_counter_paths, collect_power_sample
 from .sensors import sample_sensor_snapshot
+from .trace_capture import TraceCaptureManager
 from .uma import inspect_uma
 
 
 class SnapshotCollector:
-    def __init__(self) -> None:
+    def __init__(self, trace_manager: TraceCaptureManager | None = None) -> None:
         self.counter_paths = build_counter_paths()
         self.opencl_result = probe_opencl(iterations=1)
         self.last_engine_running_times: dict[str, float] = {}
+        self.trace_manager = trace_manager or TraceCaptureManager()
 
     def collect(self) -> dict[str, object]:
         uma_snapshot = inspect_uma()
@@ -51,6 +53,7 @@ class SnapshotCollector:
                 "power": power_state,
                 "risk": risk,
                 "sensors": sensors,
+                "trace": self.trace_manager.status(),
             },
             "gpu": {
                 "top_engine": {"name": top_engine[0], "util_percent": top_engine[1]},

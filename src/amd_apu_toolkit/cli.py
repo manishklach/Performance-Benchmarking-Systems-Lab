@@ -10,6 +10,7 @@ from .gpu_tracer import format_trace_report, trace_gpu_processes, watch_gpu_proc
 from .gui import launch_gui
 from .opencl_probe import probe_opencl
 from .power import correlate_power
+from .trace_capture import DEFAULT_PROFILES, TraceCaptureManager
 from .uma import inspect_uma
 from .web_server import run_web_server
 
@@ -70,6 +71,20 @@ def build_parser() -> argparse.ArgumentParser:
     web_parser.add_argument("--port", type=int, default=8765, help="Bind port.")
     web_parser.add_argument("--refresh", type=float, default=2.0, help="WebSocket refresh interval in seconds.")
 
+    trace_capture_parser = subparsers.add_parser("capture-trace", help="Capture a short WPR ETW trace.")
+    trace_capture_parser.add_argument(
+        "--duration",
+        type=int,
+        default=15,
+        help="Capture duration in seconds.",
+    )
+    trace_capture_parser.add_argument(
+        "--profiles",
+        nargs="+",
+        default=DEFAULT_PROFILES,
+        help="WPR profiles to include, e.g. CPU GPU Video.",
+    )
+
     return parser
 
 
@@ -110,6 +125,10 @@ def main() -> None:
             print(format_trace_report(results))
     elif args.command == "serve-web":
         run_web_server(args.host, args.port, args.refresh)
+    elif args.command == "capture-trace":
+        manager = TraceCaptureManager()
+        result = manager.capture_for_duration(profiles=args.profiles, duration_sec=args.duration)
+        _print_mapping("Trace Capture", result)
 
 
 if __name__ == "__main__":

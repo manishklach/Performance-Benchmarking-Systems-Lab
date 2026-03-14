@@ -455,6 +455,32 @@ function renderAlerts(snapshot) {
   document.getElementById("overviewAlerts").textContent = `${text}${risk.reasons?.length ? ` | causes: ${risk.reasons.join(", ")}` : ""}`;
 }
 
+function renderTraceState(trace) {
+  const state = textOr(trace?.state, "n/a");
+  const profiles = Array.isArray(trace?.current_profiles) && trace.current_profiles.length
+    ? trace.current_profiles.join(", ")
+    : (Array.isArray(trace?.last_profiles) && trace.last_profiles.length ? trace.last_profiles.join(", ") : "n/a");
+  document.getElementById("traceState").textContent = state;
+  document.getElementById("traceProfiles").textContent = profiles;
+  document.getElementById("traceOutput").textContent = textOr(trace?.output_path);
+  document.getElementById("traceLastPath").textContent = textOr(trace?.last_trace_path);
+  document.getElementById("traceHint").textContent = trace?.last_error
+    ? trace.last_error
+    : textOr(trace?.analysis_hint, "Capture CPU/GPU/Video ETW traces for WPA analysis.");
+  document.getElementById("traceStartBtn").disabled = !trace?.available || state === "running";
+  document.getElementById("traceStopBtn").disabled = state !== "running";
+}
+
+async function postTraceAction(endpoint, payload = undefined) {
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: payload ? JSON.stringify(payload) : undefined,
+  });
+  const data = await response.json();
+  renderTraceState(data);
+}
+
 function updateSnapshot(snapshot) {
   const power = snapshot.power;
   const gpu = snapshot.gpu;
@@ -463,6 +489,7 @@ function updateSnapshot(snapshot) {
   const powerState = snapshot.system.power;
   const risk = snapshot.system.risk;
   const sensors = snapshot.system.sensors;
+  const trace = snapshot.system.trace;
   const topEngine = gpu.top_engine || { name: "idle", util_percent: 0 };
   const decodeUtil = sumEngineValues(gpu.engines, (name) => name.includes("decode"));
   const encodeUtil = sumEngineValues(gpu.engines, (name) => name.includes("encode") || name.includes("codec"));
@@ -543,6 +570,7 @@ function updateSnapshot(snapshot) {
   document.getElementById("oclUnits").textContent = opencl.max_compute_units ?? "n/a";
   document.getElementById("oclUnified").textContent = String(opencl.unified_memory);
   document.getElementById("oclClinfo").textContent = fmt(opencl.average_clinfo_ms, " ms");
+  renderTraceState(trace);
 
   pushLabel(snapshot.timestamp.split(" ").pop());
   pushPoint(history.cpu, Number(power.cpu_util_percent ?? 0));
@@ -589,6 +617,14 @@ navButtons.forEach((button) => {
     button.classList.add("is-active");
     views.forEach((view) => view.classList.toggle("is-active", view.id === button.dataset.view));
   });
+});
+
+document.getElementById("traceStartBtn").addEventListener("click", () => {
+  postTraceAction("/api/trace/start", { profiles: ["CPU", "GPU", "Video"], duration_sec: 15 });
+});
+
+document.getElementById("traceStopBtn").addEventListener("click", () => {
+  postTraceAction("/api/trace/stop");
 });
 
 function connect() {

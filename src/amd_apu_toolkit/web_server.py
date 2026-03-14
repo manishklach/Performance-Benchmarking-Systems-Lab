@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-from pathlib import Path
 
 from fastapi import FastAPI, WebSocket
 from starlette.websockets import WebSocketDisconnect
@@ -9,11 +8,13 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 
+from .trace_capture import TraceCaptureManager
 from .web_snapshot import SnapshotCollector, frontend_root
 
 
 def create_app(refresh_seconds: float = 2.0) -> FastAPI:
-    collector = SnapshotCollector()
+    trace_manager = TraceCaptureManager()
+    collector = SnapshotCollector(trace_manager=trace_manager)
     app = FastAPI(title="AMD APU Browser Dashboard")
     web_root = frontend_root()
     static_root = web_root / "static"
@@ -22,6 +23,21 @@ def create_app(refresh_seconds: float = 2.0) -> FastAPI:
     @app.get("/api/snapshot")
     async def api_snapshot():
         return collector.collect()
+
+    @app.get("/api/trace/status")
+    async def api_trace_status():
+        return trace_manager.status()
+
+    @app.post("/api/trace/start")
+    async def api_trace_start(payload: dict | None = None):
+        body = payload or {}
+        profiles = body.get("profiles")
+        duration = int(body.get("duration_sec") or 15)
+        return trace_manager.start_capture(profiles=profiles, duration_sec=duration)
+
+    @app.post("/api/trace/stop")
+    async def api_trace_stop():
+        return trace_manager.stop_capture(reason="manual")
 
     @app.get("/")
     async def index():
