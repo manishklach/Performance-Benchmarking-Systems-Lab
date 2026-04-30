@@ -1,0 +1,9 @@
+data/monitor.db
+data/server.log
+data/server.err.log
+data/dashboard-preview.png
+data/dashboard-preview.svg
+data/dashboard-ui.png
+data/live-dashboard.png
+data/live-server.log
+data/live-server.err.log
