@@ -1,6 +1,8 @@
 # Performance Benchmarking Systems Lab
 
-Performance Benchmarking Systems Lab is a master monorepo for benchmarking, monitoring, and systems-performance projects.
+Performance Benchmarking Systems Lab is the central monorepo for a collection of benchmarking, monitoring, telemetry, and systems-performance projects focused on practical measurement, reproducible evaluation, and developer-facing tooling.
+
+It brings together GPU and CPU benchmark harnesses, agent-runtime performance analysis, Windows and AMD APU monitoring utilities, and web-based diagnostics into one source of truth with preserved project history. The goal is to make it easier to compare experiments, share conventions, reuse supporting code, and evolve related performance tools under a single repository.
 
 ## Goals
 
