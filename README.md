@@ -18,26 +18,18 @@ shared/       Common code, schemas, and reusable assets
 docs/         Design notes, runbooks, and migration plans
 ```
 
-## Planned Project Imports
+## Current Projects
 
 - `amd-apu-toolkit`
-- `reliable-gpu-kernel-bench`
-- `Codex-Agent-Monitor`
 - `speedtest-web`
-- `hbf-ready-bench`
-- `Windows-Kernel-Monitor`
 
-## Suggested Initial Placement
+## Active Layout
 
 ```text
 tools/amd-apu-toolkit
-benchmarks/reliable-gpu-kernel-bench
-apps/Codex-Agent-Monitor
 apps/speedtest-web
-benchmarks/hbf-ready-bench
-tools/Windows-Kernel-Monitor
 ```
 
-## Import Strategy
+## Notes
 
-Use subtree-style imports or history-preserving migrations so each project can move into this repo without losing commit history.
+Additional benchmarking and monitoring repos were imported during consolidation work and later removed from this monorepo by request.

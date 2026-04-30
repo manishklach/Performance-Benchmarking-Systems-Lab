@@ -13,12 +13,12 @@
 
 - `amd-apu-toolkit` has been imported into `tools/amd-apu-toolkit` with preserved git history.
 - `speedtest-web` has been imported into `apps/speedtest-web` with preserved git history.
-- `reliable-gpu-kernel-bench` has been imported into `benchmarks/reliable-gpu-kernel-bench` with preserved git history.
-- `Codex-Agent-Monitor` has been imported into `apps/Codex-Agent-Monitor` with preserved git history.
-- `hbf-ready-bench` has been imported into `benchmarks/hbf-ready-bench` with preserved git history.
-- `Windows-Kernel-Monitor` has been imported into `tools/Windows-Kernel-Monitor` with preserved git history.
+- `reliable-gpu-kernel-bench` was imported and later removed from this monorepo by request.
+- `Codex-Agent-Monitor` was imported and later removed from this monorepo by request.
+- `hbf-ready-bench` was imported and later removed from this monorepo by request.
+- `Windows-Kernel-Monitor` was imported and later removed from this monorepo by request.
 
 ## Recommended Steps
 
-1. Create shared documentation for benchmark conventions, naming, and output formats.
-2. Decide whether each imported project remains independently releasable or becomes monorepo-native.
+1. Decide whether to keep the repo focused on the remaining active projects or repurpose it further.
+2. Add a clearer top-level project index if more projects are introduced later.
