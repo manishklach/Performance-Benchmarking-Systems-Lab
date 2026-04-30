@@ -1,0 +1,44 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Node / web
+node_modules/
+dist/
+build/
+.next/
+.turbo/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Rust / Go / CMake / misc build output
+target/
+bin/
+obj/
+out/
+cmake-build-*/
+
+# Environment and secrets
+.env
+.env.*
+*.local
+
+# Benchmark artifacts
+results/
+artifacts/
+reports/
+tmp/
+temp/
