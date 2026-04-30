@@ -21,11 +21,13 @@ docs/         Design notes, runbooks, and migration plans
 ## Current Projects
 
 - `amd-apu-toolkit`
+- `agentic_cpu_bottleneck_bench`
 - `speedtest-web`
 
 ## Active Layout
 
 ```text
+benchmarks/agentic_cpu_bottleneck_bench
 tools/amd-apu-toolkit
 apps/speedtest-web
 ```
