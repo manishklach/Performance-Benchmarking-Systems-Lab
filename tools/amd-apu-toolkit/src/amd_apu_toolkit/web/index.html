@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AMD APU Browser Dashboard</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>AMD APU Browser Dashboard</h1>
+      <p id="status">Connecting</p>
+      <p id="providerBadge" class="provider-badge">Sensor provider: windows-only</p>
+    </div>
+    <div class="actions">
+      <button class="nav is-active" data-view="gpu-focus">GPU Focus</button>
+      <button class="nav" data-view="cpu-focus">CPU Focus</button>
+      <button class="nav" data-view="gpu-cpu">GPU / CPU</button>
+      <button class="nav" data-view="ram">RAM</button>
+      <button class="nav" data-view="sensors">Sensors</button>
+      <button class="nav" data-view="overview">Overview</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="gpu-focus" class="view is-active">
+      <div class="cards six">
+        <article class="card"><h2>GPU Util</h2><p id="gpuUtil">n/a</p></article>
+        <article class="card"><h2>Top Engine</h2><p id="topEngine">n/a</p></article>
+        <article class="card"><h2>Video Decode</h2><p id="gpuDecode">n/a</p></article>
+        <article class="card"><h2>Video Encode</h2><p id="gpuEncodeCard">n/a</p></article>
+        <article class="card"><h2>Video Proc</h2><p id="gpuVideoProc">n/a</p></article>
+        <article class="card"><h2>Top GPU Memory</h2><p id="gpuTopMemory">n/a</p></article>
+      </div>
+      <div class="grid-two">
+        <article class="panel">
+          <h2>GPU Engine Activity</h2>
+          <canvas id="gpuFocusChart"></canvas>
+        </article>
+        <article class="panel">
+          <h2>GPU Alerts</h2>
+          <p id="gpuAlerts" class="alert">No GPU spikes.</p>
+          <h2>GPU Memory</h2>
+          <div class="kv">
+            <span>Shared</span><span id="gpuSharedDetail">n/a</span>
+            <span>Dedicated</span><span id="gpuDedicatedDetail">n/a</span>
+            <span>Committed</span><span id="gpuCommittedDetail">n/a</span>
+            <span>Runtime Delta</span><span id="runtimeDelta">n/a</span>
+            <span>GPU Processes</span><span id="gpuProcCount">n/a</span>
+            <span>Video Encode</span><span id="gpuEncode">n/a</span>
+            <span>Video Proc</span><span id="gpuVideoProcDetail">n/a</span>
+          </div>
+          <h2>Top GPU Processes</h2>
+          <table>
+            <thead><tr><th>GPU %</th><th>PID</th><th>Process</th><th>Dedicated</th><th>Shared</th></tr></thead>
+            <tbody id="gpuFocusProcesses"></tbody>
+          </table>
+        </article>
+      </div>
+    </section>
+
+    <section id="gpu-cpu" class="view">
+      <article class="panel full">
+        <h2>GPU / CPU Utilization</h2>
+        <canvas id="gpuCpuChart"></canvas>
+      </article>
+    </section>
+
+    <section id="cpu-focus" class="view">
+      <div class="cards four">
+        <article class="card"><h2>CPU Util</h2><p id="cpuFocusUtil">n/a</p></article>
+        <article class="card"><h2>Runnable/Core</h2><p id="cpuRunnable">n/a</p></article>
+        <article class="card"><h2>Hard Faults/s</h2><p id="cpuHardFaults">n/a</p></article>
+        <article class="card"><h2>Disk Queue</h2><p id="cpuDiskQueue">n/a</p></article>
+      </div>
+      <div class="grid-two">
+        <article class="panel">
+          <h2>CPU Latency Signals</h2>
+          <div class="stacked-chart">
+            <div class="subchart">
+              <h3>Queue and Interrupts</h3>
+              <canvas id="cpuLatencyChart"></canvas>
+            </div>
+            <div class="subchart">
+              <h3>Context Switches and Faults</h3>
+              <canvas id="cpuActivityChart"></canvas>
+            </div>
+          </div>
+        </article>
+        <article class="panel">
+          <h2>Pressure + Power</h2>
+          <div class="kv">
+            <span>Commit</span><span id="cpuCommitGb">n/a</span>
+            <span>Commit %</span><span id="cpuCommitPct">n/a</span>
+            <span>Compression</span><span id="cpuCompression">n/a</span>
+            <span>Pagefile %</span><span id="cpuPagefile">n/a</span>
+            <span>Battery</span><span id="powerBattery">n/a</span>
+            <span>Power Plan</span><span id="powerPlan">n/a</span>
+            <span>Remaining</span><span id="powerRemaining">n/a</span>
+            <span>Risk</span><span id="riskScore">n/a</span>
+          </div>
+          <h2>Top CPU Processes</h2>
+          <table>
+            <thead><tr><th>CPU %</th><th>PID</th><th>Process</th><th>Threads</th><th>Private MB</th></tr></thead>
+            <tbody id="cpuProcesses"></tbody>
+          </table>
+        </article>
+      </div>
+    </section>
+
+    <section id="ram" class="view">
+      <div class="cards four">
+        <article class="card"><h2>Commit</h2><p id="ramCommitGb">n/a</p></article>
+        <article class="card"><h2>Commit %</h2><p id="ramCommitPct">n/a</p></article>
+        <article class="card"><h2>Compression</h2><p id="ramCompression">n/a</p></article>
+        <article class="card"><h2>Pagefile</h2><p id="ramPagefile">n/a</p></article>
+      </div>
+      <article class="panel full">
+        <h2>RAM and GPU Memory</h2>
+        <canvas id="ramChart"></canvas>
+      </article>
+    </section>
+
+    <section id="sensors" class="view">
+      <div class="cards six">
+        <article class="card"><h2>Provider</h2><p id="sensorProviderCard">n/a</p></article>
+        <article class="card"><h2>CPU MHz</h2><p id="sensorCpuClockCard">n/a</p></article>
+        <article class="card"><h2>CPU Perf</h2><p id="sensorCpuPerfCard">n/a</p></article>
+        <article class="card"><h2>GPU Core</h2><p id="sensorGpuCoreCard">n/a</p></article>
+        <article class="card"><h2>GPU Temp</h2><p id="sensorGpuTempCard">n/a</p></article>
+        <article class="card"><h2>Throttle</h2><p id="sensorThrottleCard">n/a</p></article>
+      </div>
+      <div class="grid-two">
+        <article class="panel">
+          <h2>Sensor History</h2>
+          <div class="sensor-chart-wrap">
+            <canvas id="sensorChart"></canvas>
+          </div>
+        </article>
+        <article class="panel">
+          <h2>Sensor Snapshot</h2>
+          <div class="kv">
+            <span>Provider</span><span id="sensorProvider">n/a</span>
+            <span>CPU Perf</span><span id="sensorCpuPerf">n/a</span>
+            <span>CPU Limit</span><span id="sensorCpuLimit">n/a</span>
+            <span>GPU Core</span><span id="sensorGpuCore">n/a</span>
+            <span>GPU Memory</span><span id="sensorGpuMem">n/a</span>
+            <span>GPU Temp</span><span id="sensorGpuTemp">n/a</span>
+            <span>GPU Power</span><span id="sensorGpuPower">n/a</span>
+            <span>Throttle Hint</span><span id="sensorThrottle">n/a</span>
+          </div>
+          <h2>Setup Hint</h2>
+          <p id="sensorHint" class="alert">Install LibreHardwareMonitor or OpenHardwareMonitor and enable WMI for GPU sensors.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="overview" class="view">
+      <div class="cards six">
+        <article class="card"><h2>Risk Score</h2><p id="overviewRisk">n/a</p></article>
+        <article class="card"><h2>Battery</h2><p id="overviewBattery">n/a</p></article>
+        <article class="card"><h2>CPU Util</h2><p id="cpuUtil">n/a</p></article>
+        <article class="card"><h2>Free RAM</h2><p id="freeRam">n/a</p></article>
+        <article class="card"><h2>CPU Clock</h2><p id="sensorCpuClock">n/a</p></article>
+        <article class="card"><h2>GPU Clock</h2><p id="sensorGpuClock">n/a</p></article>
+      </div>
+      <div class="grid-two">
+        <article class="panel">
+          <h2>Alerts</h2>
+          <p id="overviewAlerts" class="alert">No alerts.</p>
+          <h2>Top GPU Processes</h2>
+          <table>
+            <thead><tr><th>GPU %</th><th>PID</th><th>Process</th><th>Dedicated</th><th>Shared</th></tr></thead>
+            <tbody id="overviewProcesses"></tbody>
+          </table>
+        </article>
+        <article class="panel">
+          <h2>Power + System</h2>
+          <div class="kv">
+            <span>UMA Verdict</span><span id="umaVerdict">n/a</span>
+            <span>Pressure</span><span id="umaPressure">n/a</span>
+            <span>Power Plan</span><span id="overviewPowerPlan">n/a</span>
+            <span>Remaining</span><span id="overviewRemaining">n/a</span>
+            <span>Commit</span><span id="overviewCommit">n/a</span>
+            <span>Disk Queue</span><span id="overviewDiskQueue">n/a</span>
+          </div>
+          <h2>Risk Drivers</h2>
+          <p id="riskReasons" class="alert">No active risk drivers.</p>
+          <h2>Trace Capture</h2>
+          <div class="trace-actions">
+            <button id="traceStartBtn" class="trace-btn">Start 15s Trace</button>
+            <button id="traceStopBtn" class="trace-btn trace-btn-secondary">Stop Trace</button>
+          </div>
+          <div class="kv">
+            <span>Status</span><span id="traceState">n/a</span>
+            <span>Profiles</span><span id="traceProfiles">n/a</span>
+            <span>Target</span><span id="traceOutput">n/a</span>
+            <span>Last Trace</span><span id="traceLastPath">n/a</span>
+            <span>Summary</span><span id="traceSummaryPath">n/a</span>
+            <span>Preflight</span><span id="tracePreflight">n/a</span>
+          </div>
+          <p id="traceHint" class="alert">Capture CPU/GPU/Video ETW traces for WPA analysis.</p>
+          <h2>Power History</h2>
+          <div class="power-chart-wrap">
+            <canvas id="powerChart"></canvas>
+          </div>
+          <h2>OpenCL Runtime</h2>
+          <div class="kv">
+            <span>Device</span><span id="oclDevice">n/a</span>
+            <span>Platform</span><span id="oclPlatform">n/a</span>
+            <span>Compute Units</span><span id="oclUnits">n/a</span>
+            <span>Unified Memory</span><span id="oclUnified">n/a</span>
+            <span>clinfo Avg</span><span id="oclClinfo">n/a</span>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
