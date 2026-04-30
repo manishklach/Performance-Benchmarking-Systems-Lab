@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Variant Search Report</title>
+  <style>
+    :root {
+      --bg: #f3eee6;
+      --paper: #fffdf8;
+      --ink: #211d1a;
+      --muted: #6c6258;
+      --line: #d8cfc4;
+      --accent: #2a6f97;
+    }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: Georgia, "Times New Roman", serif; }
+    main { max-width: 1120px; margin: 24px auto; padding: 30px 36px 44px; background: var(--paper); border: 1px solid var(--line); box-shadow: 0 16px 40px rgba(0,0,0,.08); }
+    h1, h2, h3 { margin-top: 0; }
+    h2 { margin-top: 28px; padding-top: 10px; border-top: 1px solid var(--line); }
+    p, li { line-height: 1.45; }
+    .hero { border-left: 4px solid #8c2f39; background: #f8f1ea; padding: 14px 16px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .card { border: 1px solid var(--line); background: #fffaf2; padding: 16px 18px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+    th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { background: #f4ede3; }
+    img { max-width: 100%; border: 1px solid var(--line); background: white; }
+    code { font-family: "Courier New", monospace; }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Variant Search Report</h1>
+    <p class="hero"><strong>Purpose.</strong> This report enumerates the fixed generated Triton matmul candidate set and, when available, summarizes repeated GPU batch results for those variants.</p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Generated candidate source</h3>
+        <p>The current generated variants are defined in <code>triton_adapter.py</code> as a small, explicit subset of the official Triton matmul search space.</p>
+      </div>
+      <div class="card">
+        <h3>Batch result source</h3>
+        <p>Expected GPU output directory:</p>
+        <p><code>C:\Users\ManishKL\Documents\Playground\kernel_noise_prototype\runs\batch_outputs\triton_matmul_generated</code></p>
+      </div>
+    </div>
+
+    <h2>Generated Candidate Set</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Variant</th>
+          <th>BLOCK_SIZE_M</th>
+          <th>BLOCK_SIZE_N</th>
+          <th>BLOCK_SIZE_K</th>
+          <th>GROUP_SIZE_M</th>
+          <th>num_warps</th>
+          <th>num_stages</th>
+          <th>activation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>generated_matmul_balanced_128x128x64_w4_s4</code></td><td>128</td><td>128</td><td>64</td><td>8</td><td>4</td><td>4</td><td><code>none</code></td></tr><tr><td><code>generated_matmul_wide_n_64x256x32_w4_s4</code></td><td>64</td><td>256</td><td>32</td><td>8</td><td>4</td><td>4</td><td><code>none</code></td></tr><tr><td><code>generated_matmul_aggressive_128x256x64_w8_s3</code></td><td>128</td><td>256</td><td>64</td><td>8</td><td>8</td><td>3</td><td><code>none</code></td></tr><tr><td><code>generated_matmul_compact_64x64x32_w2_s5</code></td><td>64</td><td>64</td><td>32</td><td>8</td><td>2</td><td>5</td><td><code>none</code></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Why These Variants</h2>
+    <ul>
+      <li><code>balanced</code> is a middle-of-the-range square tiling choice.</li>
+      <li><code>wide_n</code> favors larger output-N tiles.</li>
+      <li><code>aggressive</code> uses larger tiles and more warps to probe higher-throughput regimes.</li>
+      <li><code>compact</code> uses smaller tiles and fewer warps to probe lighter-weight execution regimes.</li>
+    </ul>
+
+    <h2>GPU Batch Summary</h2>
+    <p>No Triton batch results found yet. Run <code>python triton_batch_runner.py --runs 12 --workload matmul --candidate-mode generated</code> on a GPU machine to populate this section.</p>
+
+    
+
+    <h2>Artifacts</h2>
+    <ul>
+      <li>No GPU batch bundle present yet.</li>
+    </ul>
+  </main>
+</body>
+</html>

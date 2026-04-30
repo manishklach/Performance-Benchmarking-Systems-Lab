@@ -1,0 +1,1121 @@
+{
+  "summary": {
+    "runs": 20,
+    "true_winner": "candidate_consistent",
+    "naive_matches_true": 8,
+    "naive_false_winners": 12,
+    "final_promotes_true": 1,
+    "final_false_promotions": 0,
+    "defer_count": 16,
+    "reject_count": 3,
+    "promote_count": 1,
+    "decision_disagreement_count": 20,
+    "avg_final_winner_contamination_rate": 0.7075,
+    "avg_final_lcb_pct": 15.0502
+  },
+  "records": [
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 7,
+      "naive_winner": "candidate_consistent",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_slightly_slow",
+        "loser_name": "candidate_baseline",
+        "rel_gain_pct": 0.0,
+        "lower_confidence_bound_pct": -1.0,
+        "unresolved": true,
+        "reasons": [
+          "insufficient_acceptable_trials"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_baseline",
+        "loser_name": "candidate_slightly_slow",
+        "rel_gain_pct": 67.15878254717205,
+        "lower_confidence_bound_pct": 62.40878254717205,
+        "unresolved": true,
+        "reasons": [
+          "candidate_baseline_acceptable_count_low",
+          "candidate_slightly_slow_acceptable_count_low"
+        ]
+      },
+      "decision": "defer:candidate_baseline:candidate_slightly_slow",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.8473999807611108,
+          "median_acceptable_ms": 1.5260000072885305,
+          "acceptable_count": 2,
+          "contamination_rate": 0.9
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 1.8496280061663128,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.56454999523703,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 2.218099994934164,
+          "median_acceptable_ms": 4.646599991247058,
+          "acceptable_count": 1,
+          "contamination_rate": 0.95
+        }
+      }
+    },
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 8,
+      "naive_winner": "candidate_consistent",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_baseline",
+        "loser_name": "candidate_fast_but_noisy",
+        "rel_gain_pct": 0.0,
+        "lower_confidence_bound_pct": -1.0,
+        "unresolved": true,
+        "reasons": [
+          "insufficient_acceptable_trials"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_baseline",
+        "loser_name": "candidate_fast_but_noisy",
+        "rel_gain_pct": 0.0,
+        "lower_confidence_bound_pct": -1.0,
+        "unresolved": true,
+        "reasons": [
+          "insufficient_acceptable_trials"
+        ]
+      },
+      "decision": "reject:candidate_baseline",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.7439000075682998,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 1.878400013083592,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.3711499923374504,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 1.965200004633516,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        }
+      }
+    },
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 9,
+      "naive_winner": "candidate_consistent",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_fast_but_noisy",
+        "loser_name": "candidate_baseline",
+        "rel_gain_pct": 0.0,
+        "lower_confidence_bound_pct": -1.0,
+        "unresolved": true,
+        "reasons": [
+          "insufficient_acceptable_trials"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_baseline",
+        "loser_name": "candidate_fast_but_noisy",
+        "rel_gain_pct": 42.57316127742411,
+        "lower_confidence_bound_pct": 37.82316127742411,
+        "unresolved": true,
+        "reasons": [
+          "candidate_baseline_acceptable_count_low",
+          "candidate_fast_but_noisy_acceptable_count_low"
+        ]
+      },
+      "decision": "defer:candidate_baseline:candidate_fast_but_noisy",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.5362999984063208,
+          "median_acceptable_ms": 1.4011000166647136,
+          "acceptable_count": 1,
+          "contamination_rate": 0.95
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 1.8992500117747113,
+          "median_acceptable_ms": 2.439800009597093,
+          "acceptable_count": 1,
+          "contamination_rate": 0.95
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.5112499968381599,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 2.1691000147257,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        }
+      }
+    },
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 10,
+      "naive_winner": "candidate_fast_but_noisy",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_baseline",
+        "loser_name": "candidate_fast_but_noisy",
+        "rel_gain_pct": 22.890526327885727,
+        "lower_confidence_bound_pct": 18.72385966121906,
+        "unresolved": true,
+        "reasons": [
+          "candidate_baseline_acceptable_count_low",
+          "candidate_fast_but_noisy_acceptable_count_low"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_baseline",
+        "loser_name": "candidate_fast_but_noisy",
+        "rel_gain_pct": 21.76848539909111,
+        "lower_confidence_bound_pct": 18.26848539909111,
+        "unresolved": true,
+        "reasons": [
+          "candidate_baseline_acceptable_count_low",
+          "candidate_fast_but_noisy_acceptable_count_low"
+        ]
+      },
+      "decision": "defer:candidate_baseline:candidate_fast_but_noisy",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.4959499967517331,
+          "median_acceptable_ms": 1.4367999974638224,
+          "acceptable_count": 7,
+          "contamination_rate": 0.65
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 1.7422499950043857,
+          "median_acceptable_ms": 1.836600000387989,
+          "acceptable_count": 6,
+          "contamination_rate": 0.7
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.2389000039547682,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 2.0367000106489286,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        }
+      }
+    },
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 11,
+      "naive_winner": "candidate_fast_but_noisy",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_baseline",
+        "loser_name": "candidate_consistent",
+        "rel_gain_pct": 4.20026351293467,
+        "lower_confidence_bound_pct": 0.8669301796013373,
+        "unresolved": true,
+        "reasons": [
+          "candidate_baseline_acceptable_count_low",
+          "candidate_consistent_acceptable_count_low",
+          "lcb_below_threshold"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_consistent",
+        "loser_name": "candidate_baseline",
+        "rel_gain_pct": 2.4367961736328736,
+        "lower_confidence_bound_pct": -1.8132038263671264,
+        "unresolved": true,
+        "reasons": [
+          "candidate_consistent_acceptable_count_low",
+          "candidate_baseline_acceptable_count_low",
+          "lcb_below_threshold"
+        ]
+      },
+      "decision": "defer:candidate_consistent:candidate_baseline",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.7242000030819327,
+          "median_acceptable_ms": 1.5327500004786998,
+          "acceptable_count": 4,
+          "contamination_rate": 0.8
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 1.1693089993786998,
+          "median_acceptable_ms": 1.895600013085641,
+          "acceptable_count": 2,
+          "contamination_rate": 0.6666666666666666
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.4412500022444874,
+          "median_acceptable_ms": 1.495400007115677,
+          "acceptable_count": 3,
+          "contamination_rate": 0.85
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 1.974199985852465,
+          "median_acceptable_ms": 1.9389999797567725,
+          "acceptable_count": 3,
+          "contamination_rate": 0.5
+        }
+      }
+    },
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 12,
+      "naive_winner": "candidate_fast_but_noisy",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_consistent",
+        "loser_name": "candidate_baseline",
+        "rel_gain_pct": 0.0,
+        "lower_confidence_bound_pct": -1.0,
+        "unresolved": true,
+        "reasons": [
+          "insufficient_acceptable_trials"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_consistent",
+        "loser_name": "candidate_baseline",
+        "rel_gain_pct": 5.910001751881074,
+        "lower_confidence_bound_pct": 1.1600017518810741,
+        "unresolved": true,
+        "reasons": [
+          "candidate_consistent_acceptable_count_low",
+          "candidate_baseline_acceptable_count_low",
+          "lcb_below_threshold"
+        ]
+      },
+      "decision": "defer:candidate_consistent:candidate_baseline",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.4610499929403886,
+          "median_acceptable_ms": 1.2977999867871404,
+          "acceptable_count": 1,
+          "contamination_rate": 0.95
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 1.1970909999217838,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.321000003372319,
+          "median_acceptable_ms": 1.221099984832108,
+          "acceptable_count": 1,
+          "contamination_rate": 0.95
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 1.9204999989597127,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        }
+      }
+    },
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 13,
+      "naive_winner": "candidate_fast_but_noisy",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_baseline",
+        "loser_name": "candidate_fast_but_noisy",
+        "rel_gain_pct": 0.0,
+        "lower_confidence_bound_pct": -1.0,
+        "unresolved": true,
+        "reasons": [
+          "insufficient_acceptable_trials"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_baseline",
+        "loser_name": "candidate_fast_but_noisy",
+        "rel_gain_pct": 0.0,
+        "lower_confidence_bound_pct": -1.0,
+        "unresolved": true,
+        "reasons": [
+          "insufficient_acceptable_trials"
+        ]
+      },
+      "decision": "reject:candidate_baseline",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.5880500141065568,
+          "median_acceptable_ms": 1.7742000054568052,
+          "acceptable_count": 1,
+          "contamination_rate": 0.95
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 1.8907659899559803,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.5782000118633732,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 1.9100000063190237,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        }
+      }
+    },
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 14,
+      "naive_winner": "candidate_consistent",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_fast_but_noisy",
+        "loser_name": "candidate_slightly_slow",
+        "rel_gain_pct": 14.954778794170895,
+        "lower_confidence_bound_pct": 10.788112127504228,
+        "unresolved": true,
+        "reasons": [
+          "candidate_fast_but_noisy_acceptable_count_low",
+          "candidate_slightly_slow_acceptable_count_low"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_fast_but_noisy",
+        "loser_name": "candidate_slightly_slow",
+        "rel_gain_pct": 15.664359076800007,
+        "lower_confidence_bound_pct": 11.164359076800007,
+        "unresolved": true,
+        "reasons": [
+          "candidate_fast_but_noisy_acceptable_count_low",
+          "candidate_slightly_slow_acceptable_count_low"
+        ]
+      },
+      "decision": "defer:candidate_fast_but_noisy:candidate_slightly_slow",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.4042999973753467,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 1.7937999946298078,
+          "median_acceptable_ms": 1.7844999965745956,
+          "acceptable_count": 2,
+          "contamination_rate": 0.9
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.3015000149607658,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 2.023000008193776,
+          "median_acceptable_ms": 2.1159500029170886,
+          "acceptable_count": 2,
+          "contamination_rate": 0.9
+        }
+      }
+    },
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 15,
+      "naive_winner": "candidate_fast_but_noisy",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_baseline",
+        "loser_name": "candidate_fast_but_noisy",
+        "rel_gain_pct": 0.0,
+        "lower_confidence_bound_pct": -1.0,
+        "unresolved": true,
+        "reasons": [
+          "insufficient_acceptable_trials"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_baseline",
+        "loser_name": "candidate_fast_but_noisy",
+        "rel_gain_pct": 0.0,
+        "lower_confidence_bound_pct": -1.0,
+        "unresolved": true,
+        "reasons": [
+          "insufficient_acceptable_trials"
+        ]
+      },
+      "decision": "reject:candidate_baseline",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.5622500068275258,
+          "median_acceptable_ms": 1.2678000202868134,
+          "acceptable_count": 1,
+          "contamination_rate": 0.95
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 1.8496000120649114,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.4323500072350726,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 2.696850002394058,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        }
+      }
+    },
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 16,
+      "naive_winner": "candidate_fast_but_noisy",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_baseline",
+        "loser_name": "candidate_fast_but_noisy",
+        "rel_gain_pct": 0.0,
+        "lower_confidence_bound_pct": -1.0,
+        "unresolved": true,
+        "reasons": [
+          "insufficient_acceptable_trials"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_baseline",
+        "loser_name": "candidate_fast_but_noisy",
+        "rel_gain_pct": 19.607131306971144,
+        "lower_confidence_bound_pct": 15.357131306971144,
+        "unresolved": true,
+        "reasons": [
+          "candidate_baseline_acceptable_count_low",
+          "candidate_fast_but_noisy_acceptable_count_low"
+        ]
+      },
+      "decision": "defer:candidate_baseline:candidate_fast_but_noisy",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.4484499988611788,
+          "median_acceptable_ms": 1.4385499962372705,
+          "acceptable_count": 4,
+          "contamination_rate": 0.8
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 1.7705000063870102,
+          "median_acceptable_ms": 1.7894000047817826,
+          "acceptable_count": 3,
+          "contamination_rate": 0.85
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.3928500120528042,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 2.1752999891759828,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        }
+      }
+    },
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 17,
+      "naive_winner": "candidate_consistent",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_consistent",
+        "loser_name": "candidate_baseline",
+        "rel_gain_pct": 9.74759376945058,
+        "lower_confidence_bound_pct": 5.580927102783913,
+        "unresolved": true,
+        "reasons": [
+          "candidate_consistent_acceptable_count_low",
+          "candidate_baseline_acceptable_count_low"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_consistent",
+        "loser_name": "candidate_baseline",
+        "rel_gain_pct": 6.565128573290356,
+        "lower_confidence_bound_pct": 1.8151285732903562,
+        "unresolved": true,
+        "reasons": [
+          "candidate_consistent_acceptable_count_low",
+          "candidate_baseline_acceptable_count_low"
+        ]
+      },
+      "decision": "defer:candidate_consistent:candidate_baseline",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.4361999783432111,
+          "median_acceptable_ms": 1.3853499985998496,
+          "acceptable_count": 6,
+          "contamination_rate": 0.7
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 1.39437800826272,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.3276000099722296,
+          "median_acceptable_ms": 1.2943999900016934,
+          "acceptable_count": 1,
+          "contamination_rate": 0.95
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 1.8836499948520213,
+          "median_acceptable_ms": 1.906700010295026,
+          "acceptable_count": 2,
+          "contamination_rate": 0.6666666666666666
+        }
+      }
+    },
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 18,
+      "naive_winner": "candidate_fast_but_noisy",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_baseline",
+        "loser_name": "candidate_fast_but_noisy",
+        "rel_gain_pct": 0.0,
+        "lower_confidence_bound_pct": -1.0,
+        "unresolved": true,
+        "reasons": [
+          "insufficient_acceptable_trials"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_baseline",
+        "loser_name": "candidate_fast_but_noisy",
+        "rel_gain_pct": 19.551148806295345,
+        "lower_confidence_bound_pct": 15.551148806295345,
+        "unresolved": true,
+        "reasons": [
+          "candidate_baseline_acceptable_count_low",
+          "candidate_fast_but_noisy_acceptable_count_low"
+        ]
+      },
+      "decision": "defer:candidate_baseline:candidate_fast_but_noisy",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.648300007218495,
+          "median_acceptable_ms": 1.4607500052079558,
+          "acceptable_count": 4,
+          "contamination_rate": 0.8
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 1.7692999972496182,
+          "median_acceptable_ms": 1.8157499871449545,
+          "acceptable_count": 6,
+          "contamination_rate": 0.7
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.299199997447431,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 2.3429499997291714,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        }
+      }
+    },
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 19,
+      "naive_winner": "candidate_consistent",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_consistent",
+        "loser_name": "candidate_baseline",
+        "rel_gain_pct": 1.5234229292627892,
+        "lower_confidence_bound_pct": -0.1432437374038773,
+        "unresolved": true,
+        "reasons": [
+          "candidate_consistent_acceptable_count_low",
+          "candidate_baseline_acceptable_count_low",
+          "gain_below_threshold",
+          "lcb_below_threshold"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_baseline",
+        "loser_name": "candidate_consistent",
+        "rel_gain_pct": 8.98736810989616,
+        "lower_confidence_bound_pct": 6.73736810989616,
+        "unresolved": false,
+        "reasons": []
+      },
+      "decision": "defer:candidate_baseline:candidate_consistent",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.3336999982129782,
+          "median_acceptable_ms": 1.3184999988880008,
+          "acceptable_count": 11,
+          "contamination_rate": 0.45
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 1.2745270127197728,
+          "median_acceptable_ms": 1.6581500094616786,
+          "acceptable_count": 2,
+          "contamination_rate": 0.6666666666666666
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.2678500061156228,
+          "median_acceptable_ms": 1.448700000764802,
+          "acceptable_count": 11,
+          "contamination_rate": 0.45
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 1.8654000014066696,
+          "median_acceptable_ms": 1.8419999978505075,
+          "acceptable_count": 3,
+          "contamination_rate": 0.5
+        }
+      }
+    },
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 20,
+      "naive_winner": "candidate_consistent",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_consistent",
+        "loser_name": "candidate_slightly_slow",
+        "rel_gain_pct": 28.00888198081471,
+        "lower_confidence_bound_pct": 23.842215314148042,
+        "unresolved": true,
+        "reasons": [
+          "candidate_consistent_acceptable_count_low",
+          "candidate_slightly_slow_acceptable_count_low"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_consistent",
+        "loser_name": "candidate_slightly_slow",
+        "rel_gain_pct": 31.5837938168753,
+        "lower_confidence_bound_pct": 28.0837938168753,
+        "unresolved": true,
+        "reasons": [
+          "candidate_consistent_acceptable_count_low",
+          "candidate_slightly_slow_acceptable_count_low"
+        ]
+      },
+      "decision": "defer:candidate_consistent:candidate_slightly_slow",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.567250001244247,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 1.6877709957771003,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.286899991100654,
+          "median_acceptable_ms": 1.2630999990506098,
+          "acceptable_count": 6,
+          "contamination_rate": 0.7
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 1.890400002594106,
+          "median_acceptable_ms": 1.8462000007275492,
+          "acceptable_count": 7,
+          "contamination_rate": 0.65
+        }
+      }
+    },
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 21,
+      "naive_winner": "candidate_fast_but_noisy",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_slightly_slow",
+        "loser_name": "candidate_baseline",
+        "rel_gain_pct": 0.0,
+        "lower_confidence_bound_pct": -1.0,
+        "unresolved": true,
+        "reasons": [
+          "insufficient_acceptable_trials"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_baseline",
+        "loser_name": "candidate_slightly_slow",
+        "rel_gain_pct": 39.65883896992272,
+        "lower_confidence_bound_pct": 36.65883896992272,
+        "unresolved": true,
+        "reasons": [
+          "candidate_baseline_acceptable_count_low",
+          "candidate_slightly_slow_acceptable_count_low"
+        ]
+      },
+      "decision": "defer:candidate_baseline:candidate_slightly_slow",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.3570500013884157,
+          "median_acceptable_ms": 1.277000003028661,
+          "acceptable_count": 8,
+          "contamination_rate": 0.6
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 1.1234600047464482,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.344699994660914,
+          "median_acceptable_ms": null,
+          "acceptable_count": 0,
+          "contamination_rate": 1.0
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 2.0088000019313768,
+          "median_acceptable_ms": 2.1163000201340765,
+          "acceptable_count": 9,
+          "contamination_rate": 0.55
+        }
+      }
+    },
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 22,
+      "naive_winner": "candidate_consistent",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_consistent",
+        "loser_name": "candidate_baseline",
+        "rel_gain_pct": 0.032183043212549584,
+        "lower_confidence_bound_pct": -3.3011502901207836,
+        "unresolved": true,
+        "reasons": [
+          "candidate_consistent_acceptable_count_low",
+          "candidate_baseline_acceptable_count_low",
+          "gain_below_threshold",
+          "lcb_below_threshold"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_consistent",
+        "loser_name": "candidate_baseline",
+        "rel_gain_pct": 2.6353158199642635,
+        "lower_confidence_bound_pct": 0.38531581996426345,
+        "unresolved": true,
+        "reasons": [
+          "lcb_below_threshold"
+        ]
+      },
+      "decision": "defer:candidate_consistent:candidate_baseline",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.283049990888685,
+          "median_acceptable_ms": 1.2673999881371856,
+          "acceptable_count": 11,
+          "contamination_rate": 0.45
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 1.4060429972596467,
+          "median_acceptable_ms": 1.7612999945413321,
+          "acceptable_count": 1,
+          "contamination_rate": 0.8333333333333334
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.2510999949881807,
+          "median_acceptable_ms": 1.2339999957475811,
+          "acceptable_count": 11,
+          "contamination_rate": 0.45
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 1.8513499962864444,
+          "median_acceptable_ms": 1.7788000113796443,
+          "acceptable_count": 2,
+          "contamination_rate": 0.6666666666666666
+        }
+      }
+    },
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 23,
+      "naive_winner": "candidate_fast_but_noisy",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_consistent",
+        "loser_name": "candidate_baseline",
+        "rel_gain_pct": 16.318592485003084,
+        "lower_confidence_bound_pct": 12.151925818336416,
+        "unresolved": true,
+        "reasons": [
+          "candidate_consistent_acceptable_count_low",
+          "candidate_baseline_acceptable_count_low"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_consistent",
+        "loser_name": "candidate_baseline",
+        "rel_gain_pct": 5.078588218235143,
+        "lower_confidence_bound_pct": 2.0785882182351427,
+        "unresolved": true,
+        "reasons": [
+          "candidate_baseline_acceptable_count_low"
+        ]
+      },
+      "decision": "defer:candidate_consistent:candidate_baseline",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.451949996408075,
+          "median_acceptable_ms": 1.3487999967765063,
+          "acceptable_count": 8,
+          "contamination_rate": 0.6
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 1.2191310073831119,
+          "median_acceptable_ms": 1.7544000002089888,
+          "acceptable_count": 1,
+          "contamination_rate": 0.8333333333333334
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.2828000035369769,
+          "median_acceptable_ms": 1.2802999990526587,
+          "acceptable_count": 11,
+          "contamination_rate": 0.45
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 2.063300009467639,
+          "median_acceptable_ms": 1.9828000222332776,
+          "acceptable_count": 1,
+          "contamination_rate": 0.8333333333333334
+        }
+      }
+    },
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 24,
+      "naive_winner": "candidate_fast_but_noisy",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_baseline",
+        "loser_name": "candidate_slightly_slow",
+        "rel_gain_pct": 9.873612673302782,
+        "lower_confidence_bound_pct": 8.206946006636116,
+        "unresolved": true,
+        "reasons": [
+          "candidate_baseline_acceptable_count_low",
+          "candidate_slightly_slow_acceptable_count_low"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_baseline",
+        "loser_name": "candidate_slightly_slow",
+        "rel_gain_pct": 24.26094230529669,
+        "lower_confidence_bound_pct": 21.26094230529669,
+        "unresolved": true,
+        "reasons": [
+          "candidate_baseline_acceptable_count_low"
+        ]
+      },
+      "decision": "defer:candidate_baseline:candidate_slightly_slow",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.658799999859184,
+          "median_acceptable_ms": 1.4500999968731776,
+          "acceptable_count": 8,
+          "contamination_rate": 0.6
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 1.0517720074858516,
+          "median_acceptable_ms": 1.9208000012440607,
+          "acceptable_count": 2,
+          "contamination_rate": 0.6666666666666666
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.30009998974856,
+          "median_acceptable_ms": 1.3221999979577959,
+          "acceptable_count": 3,
+          "contamination_rate": 0.5
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 1.9190000020898879,
+          "median_acceptable_ms": 1.9145999976899475,
+          "acceptable_count": 13,
+          "contamination_rate": 0.35
+        }
+      }
+    },
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 25,
+      "naive_winner": "candidate_fast_but_noisy",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_consistent",
+        "loser_name": "candidate_slightly_slow",
+        "rel_gain_pct": 38.64134448156122,
+        "lower_confidence_bound_pct": 36.14134448156122,
+        "unresolved": true,
+        "reasons": [
+          "candidate_consistent_acceptable_count_low",
+          "candidate_slightly_slow_acceptable_count_low"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_consistent",
+        "loser_name": "candidate_slightly_slow",
+        "rel_gain_pct": 33.05917537426727,
+        "lower_confidence_bound_pct": 31.80917537426727,
+        "unresolved": false,
+        "reasons": []
+      },
+      "decision": "defer:candidate_consistent:candidate_slightly_slow",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.382749993354082,
+          "median_acceptable_ms": 1.6731999930925667,
+          "acceptable_count": 3,
+          "contamination_rate": 0.5
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 0.9987310002907179,
+          "median_acceptable_ms": 1.5879000129643828,
+          "acceptable_count": 1,
+          "contamination_rate": 0.8333333333333334
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.2586499942699447,
+          "median_acceptable_ms": 1.2533999979496002,
+          "acceptable_count": 15,
+          "contamination_rate": 0.25
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 1.8723999965004623,
+          "median_acceptable_ms": 1.8723999965004623,
+          "acceptable_count": 16,
+          "contamination_rate": 0.2
+        }
+      }
+    },
+    {
+      "backend": "cpu",
+      "workload": "matmul",
+      "candidate_mode": "tutorial",
+      "seed": 26,
+      "naive_winner": "candidate_fast_but_noisy",
+      "initial_finalist_analysis": {
+        "winner_name": "candidate_consistent",
+        "loser_name": "candidate_baseline",
+        "rel_gain_pct": 26.26853938302466,
+        "lower_confidence_bound_pct": 26.26853938302466,
+        "unresolved": true,
+        "reasons": [
+          "candidate_consistent_acceptable_count_low",
+          "candidate_baseline_acceptable_count_low"
+        ]
+      },
+      "final_finalist_analysis": {
+        "winner_name": "candidate_consistent",
+        "loser_name": "candidate_baseline",
+        "rel_gain_pct": 15.254823682848492,
+        "lower_confidence_bound_pct": 15.254823682848492,
+        "unresolved": false,
+        "reasons": []
+      },
+      "decision": "promote:candidate_consistent",
+      "summaries": {
+        "candidate_baseline": {
+          "median_all_ms": 1.4431500021601096,
+          "median_acceptable_ms": 1.4431500021601096,
+          "acceptable_count": 12,
+          "contamination_rate": 0.0
+        },
+        "candidate_fast_but_noisy": {
+          "median_all_ms": 1.0428109983331524,
+          "median_acceptable_ms": 1.552000001538545,
+          "acceptable_count": 2,
+          "contamination_rate": 0.6666666666666666
+        },
+        "candidate_consistent": {
+          "median_all_ms": 1.2230000138515607,
+          "median_acceptable_ms": 1.2230000138515607,
+          "acceptable_count": 12,
+          "contamination_rate": 0.0
+        },
+        "candidate_slightly_slow": {
+          "median_all_ms": 1.81719999818597,
+          "median_acceptable_ms": 1.81719999818597,
+          "acceptable_count": 6,
+          "contamination_rate": 0.0
+        }
+      }
+    }
+  ]
+}
