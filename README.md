@@ -22,16 +22,24 @@ docs/         Design notes, runbooks, and migration plans
 
 - `amd-apu-toolkit`
 - `agentic_cpu_bottleneck_bench`
+- `reliable-gpu-kernel-bench`
+- `Codex-Agent-Monitor`
 - `speedtest-web`
+- `hbf-ready-bench`
+- `Windows-Kernel-Monitor`
 
 ## Active Layout
 
 ```text
+apps/Codex-Agent-Monitor
+benchmarks/hbf-ready-bench
 benchmarks/agentic_cpu_bottleneck_bench
+benchmarks/reliable-gpu-kernel-bench
 tools/amd-apu-toolkit
 apps/speedtest-web
+tools/Windows-Kernel-Monitor
 ```
 
 ## Notes
 
-Additional benchmarking and monitoring repos were imported during consolidation work and later removed from this monorepo by request.
+Standalone repositories were consolidated here with history preserved. The master repo is the source of truth for these projects.
